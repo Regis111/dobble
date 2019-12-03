@@ -2,3 +2,6 @@
 out
 client/.gradle
 server/.gradle
+
+client/build
+server/build

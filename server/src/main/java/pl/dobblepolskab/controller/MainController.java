@@ -1,4 +1,4 @@
-package pl.controller;
+package pl.dobblepolskab.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

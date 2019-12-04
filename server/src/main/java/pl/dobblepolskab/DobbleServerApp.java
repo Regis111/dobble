@@ -1,4 +1,4 @@
-package pl.dobblePolskaB;
+package pl.dobblepolskab;
 
 public class DobbleServerApp {
     public static void main(final String[] args) {

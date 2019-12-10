@@ -1,4 +1,4 @@
-import gui.DobbleWindow;
+import pl.dobblepolskab.gui.DobbleWindow;
 
 import javafx.application.Application;
 import javafx.scene.layout.Pane;

@@ -1,4 +1,4 @@
-package pl.dobblepolskab.gamecontent;
+package pl.dobblepolskab.common.gamecontent;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -43,11 +43,16 @@ public class GameContentBox implements GameContentSource {
             while ((fileLine = reader.readLine()) != null) {
                 if (fileLine.matches("(.*)S: (.*)")) {
                     String[] def = fileLine.split("S: ");
-                    imagesPaths[Integer.parseInt(def[0]) - 1] = def[1];
+                    int symbolId = Integer.parseInt(def[0]) - 1;
+                    if(symbolId < 0 || symbolId > 49)
+                        return false;
+                    imagesPaths[symbolId] = def[1];
                 }
                 if (fileLine.matches("(.*)C: (.*)")) {
                     String[] def = fileLine.split("C: ");
                     int cardId = Integer.parseInt(def[0]) - 1;
+                    if(cardId < 0  || cardId > 54)
+                        return false;
                     String[] cardSymbolsStr = def[1].split(", ");
                     int symbolId = 0;
                     for (String cardSymbolStr : cardSymbolsStr) {
@@ -57,6 +62,7 @@ public class GameContentBox implements GameContentSource {
             }
         } catch (IOException e) {
             System.err.println("File " + boxDefPath + " not found, so directory doesn't contains game content.");
+            return false;
         }
         for (String tempPath : imagesPaths) {
             if (tempPath == null || tempPath.equals(""))

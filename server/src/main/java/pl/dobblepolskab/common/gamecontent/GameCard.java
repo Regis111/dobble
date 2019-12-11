@@ -1,4 +1,4 @@
-package pl.dobblepolskab.gamecontent;
+package pl.dobblepolskab.common.gamecontent;
 
 public class GameCard {
     private long cardId;

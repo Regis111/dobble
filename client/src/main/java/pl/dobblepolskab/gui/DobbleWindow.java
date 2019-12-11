@@ -1,4 +1,4 @@
-package gui;
+package pl.dobblepolskab.gui;
 
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.DoubleProperty;

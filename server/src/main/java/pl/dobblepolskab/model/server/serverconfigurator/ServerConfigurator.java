@@ -1,15 +1,16 @@
 package pl.dobblepolskab.model.server.serverconfigurator;
 
 public abstract class ServerConfigurator {
-    private String serverIpAddress;
     private int serverPortId;
     private int aiIntelligenceLevel;
-    protected ServerConfigurator(){
+    protected boolean completed;
 
+    private void initObject(){
+        completed = false;
     }
 
-    protected void setServerIpAddress (String ipAddress){
-        serverIpAddress = ipAddress;
+    protected ServerConfigurator(){
+        initObject();
     }
 
     protected void setServerPortId (int portId){
@@ -20,15 +21,15 @@ public abstract class ServerConfigurator {
         aiIntelligenceLevel = level;
     }
 
-    public String getServerIpAddress() {
-        return serverIpAddress;
-    }
-
     public int getServerPortId() {
         return serverPortId;
     }
 
     public int getAiIntelligenceLevel() {
         return aiIntelligenceLevel;
+    }
+
+    public boolean isConfigurationCompleted(){
+        return completed;
     }
 }

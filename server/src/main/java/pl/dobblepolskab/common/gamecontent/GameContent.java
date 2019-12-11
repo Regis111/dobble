@@ -57,8 +57,7 @@ public class GameContent {
     }
 
     public LinkedList<GameCard> getCards(){
-        LinkedList<GameCard> cardsToReturn = new LinkedList<>();
-        return cardsToReturn;
+        return new LinkedList<>(gameCards.values());
     }
 
 }

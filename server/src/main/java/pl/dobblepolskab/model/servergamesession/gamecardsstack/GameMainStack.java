@@ -3,7 +3,7 @@ package pl.dobblepolskab.model.servergamesession.gamecardsstack;
 import pl.dobblepolskab.common.gamecontent.GameCard;
 import pl.dobblepolskab.common.gamecontent.GameContent;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class GameMainStack extends GameCardsStack {
     private boolean initiated;
@@ -17,13 +17,13 @@ public class GameMainStack extends GameCardsStack {
         setUpGameContent(gameContent);
     }
 
-    public GameMainStack(GameContent gameContent, ArrayList<GameCard> cardsToAdd) {
+    public GameMainStack(GameContent gameContent, LinkedList<GameCard> cardsToAdd) {
         super();
         setUpGameContent(gameContent);
         initMainStack(cardsToAdd);
     }
 
-    public boolean initMainStack(ArrayList<GameCard> cardsToAdd) {
+    public boolean initMainStack(LinkedList<GameCard> cardsToAdd) {
         if(initiated)
             return false;
         for (GameCard curCard : cardsToAdd)

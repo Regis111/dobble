@@ -3,6 +3,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class GameContentBoxTest {
+    private static String errorString = "Validation of game content box doesn't work!";
     public boolean callBindToDirectory(String boxPath)
     {
         GameContentBox gameContentBox = new GameContentBox();
@@ -11,26 +12,26 @@ public class GameContentBoxTest {
 
     @Test
     public void bindToDirectoryValidTest(){
-        Assert.assertTrue(callBindToDirectory("build/resources/test/testGameContentBox"));
+        Assert.assertTrue(errorString, callBindToDirectory("build/resources/test/testGameContentBox"));
     }
 
     @Test
     public void bindToDirectoryCorrupted1Test(){
-        Assert.assertFalse(callBindToDirectory("build/resources/test/testGameContentBoxCorrupted1"));
+        Assert.assertFalse(errorString, callBindToDirectory("build/resources/test/testGameContentBoxCorrupted1"));
     }
 
     @Test
     public void bindToDirectoryCorrupted2Test(){
-        Assert.assertFalse(callBindToDirectory("build/resources/test/testGameContentBoxCorrupted2"));
+        Assert.assertFalse(errorString, callBindToDirectory("build/resources/test/testGameContentBoxCorrupted2"));
     }
 
     @Test
     public void bindToDirectoryCorrupted3Test(){
-        Assert.assertFalse(callBindToDirectory("build/resources/test/testGameContentBoxCorrupted3"));
+        Assert.assertFalse(errorString, callBindToDirectory("build/resources/test/testGameContentBoxCorrupted3"));
     }
 
     @Test
     public void bindToDirectoryCorrupted4Test(){
-        Assert.assertFalse(callBindToDirectory("build/resources/test/testGameContentBoxCorrupted4"));
+        Assert.assertFalse(errorString, callBindToDirectory("build/resources/test/testGameContentBoxCorrupted4"));
     }
 }

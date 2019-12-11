@@ -83,7 +83,7 @@ public class GameContentBox implements GameContentSource {
     public GameCardSymbol getNextGameCardSymbol() {
         if (gameContentCorupted)
             return null;
-        File imageFile = new File(imagesPaths[nextSymbolId]);
+        File imageFile = new File(directoryPath + File.separator + imagesPaths[nextSymbolId]);
         try {
             BufferedImage image = ImageIO.read(imageFile);
             nextSymbolId++;

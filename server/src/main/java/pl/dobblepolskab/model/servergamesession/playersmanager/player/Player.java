@@ -12,10 +12,13 @@ public abstract class Player {
         cardsStack = new PlayerStack();
     }
 
-    public Player(String name, String clientId, GameCard firstCard){
+    public Player(String name, String clientId){
         initObject();
         this.name = name;
         this.clientId = clientId;
+    }
+
+    public void preparePlayerToGame(GameCard firstCard){
         cardsStack.initPlayerStack(firstCard);
     }
 

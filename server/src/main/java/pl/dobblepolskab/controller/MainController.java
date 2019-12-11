@@ -1,13 +1,21 @@
 package pl.dobblepolskab.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.annotation.SubscribeMapping;
+import org.springframework.stereotype.Controller;
 
-@RestController
+import java.util.Random;
+
+@Controller
 public class MainController {
 
-    @RequestMapping("/hello")
-    public String helloFromDobble() {
-        return "Hello from Dobble!";
+    @SubscribeMapping("/dobblePair")
+    public String helloFromDobble(@Payload Message<?> message) {
+        String[] winOrLose = {"WIN", "LOSE"};
+        Random r = new Random();
+        int ind = r.nextInt(winOrLose.length);
+        return "Hello from Dobble! You " + winOrLose[ind];
     }
 }

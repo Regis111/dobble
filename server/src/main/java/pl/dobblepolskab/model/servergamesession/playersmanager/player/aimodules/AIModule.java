@@ -1,5 +1,7 @@
 package pl.dobblepolskab.model.servergamesession.playersmanager.player.aimodules;
 
+import pl.dobblepolskab.common.sockets.AssociationBasedClientSocket;
+import pl.dobblepolskab.common.sockets.AssociationBasedServerSocket;
 import pl.dobblepolskab.common.sockets.ClientSocket;
 
 public abstract class AIModule {
@@ -19,7 +21,7 @@ public abstract class AIModule {
     public AIModule (String moduleId){
         initObject();
         this.moduleId = moduleId;
-        clientSocket = new ClientSocket(moduleId, serverIpAddress, serverPordId);
+        clientSocket = new AssociationBasedClientSocket(moduleId, new AssociationBasedServerSocket(""));
     }
 
 

@@ -1,6 +1,7 @@
 package pl.dobblepolskab.common.gamecontent;
 
 import java.util.HashMap;
+import java.util.LinkedList;
 
 public class GameContent {
     private boolean completed;
@@ -53,6 +54,11 @@ public class GameContent {
     public boolean containsCard(GameCard gameCard){
         return gameCards.containsKey(gameCard.getCardId());
 
+    }
+
+    public LinkedList<GameCard> getCards(){
+        LinkedList<GameCard> cardsToReturn = new LinkedList<>();
+        return cardsToReturn;
     }
 
 }

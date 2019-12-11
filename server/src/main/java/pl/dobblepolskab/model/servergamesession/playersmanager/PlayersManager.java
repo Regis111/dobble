@@ -5,6 +5,7 @@ import pl.dobblepolskab.common.gamecontent.GameContent;
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.HumanPlayer;
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.Player;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class PlayersManager {
@@ -28,16 +29,22 @@ public class PlayersManager {
         return false;
     }
 
-    public boolean addHumanPlayer(String name, String clientId, GameCard firstCard){
+    public boolean addHumanPlayer(String name, String clientId){
         if(playersList.size() == 8 || checkIfPlayerExists(name, clientId))
             return false;
-        HumanPlayer newHumanPlayer;
+        HumanPlayer newHumanPlayer = new HumanPlayer(name, clientId);
+        playersList.add(newHumanPlayer);
         return true;
     }
 
-    public boolean addComputerPlayer(GameCard firstCard){
+    public boolean addComputerPlayer(){
         return true;
     }
 
-
+    public void preparePlayersToGame(LinkedList<GameCard> cardsToGiveOut){
+        for(Player currentPlayer : playersList){
+            GameCard firstCard = cardsToGiveOut.pop();
+            currentPlayer.preparePlayerToGame(firstCard);
+        }
+    }
 }

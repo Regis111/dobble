@@ -7,17 +7,17 @@ import pl.dobblepolskab.model.servergamesession.playersmanager.player.aimodules.
 public class ComputerPlayer extends Player{
     private AIModule aiModule;
 
-    private AIModule getAiModuleBasicOnLevel(int level){
+    private AIModule createAiModule(String moduleId, int level){
         switch (level){
             case 1:
-                return new PrimitiveAIModule();
+                return new PrimitiveAIModule(moduleId);
             default:
                 return null;
         }
     }
 
-    public ComputerPlayer(String name, String clientId, GameCard firstCard, int intelligenceLevel){
-        super(name, clientId, firstCard);
-        aiModule = getAiModuleBasicOnLevel(intelligenceLevel);
+    public ComputerPlayer(String name, String clientId, int intelligenceLevel){
+        super(name, clientId);
+        aiModule = createAiModule(clientId, intelligenceLevel);
     }
 }

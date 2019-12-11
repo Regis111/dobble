@@ -57,6 +57,8 @@ public class GameContent {
     }
 
     public LinkedList<GameCard> getCards(){
+        if(!completed)
+            return new LinkedList<>();
         return new LinkedList<>(gameCards.values());
     }
 

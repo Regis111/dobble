@@ -14,7 +14,7 @@ public class PlayersManager {
         playersList = new LinkedList<>();
     }
 
-    PlayersManager(){
+    public PlayersManager(){
         initObject();
     }
 

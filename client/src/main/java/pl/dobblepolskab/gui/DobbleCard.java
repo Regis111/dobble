@@ -13,20 +13,45 @@ public class DobbleCard extends Group {
     private Image[] images = new Image[IMAGES_COUNT];
     private Circle circle;
 
+    private DobbleCardLayout layout = new DobbleSquareLayout();
+
+    public DobbleCard(Image[] images) {
+        setImages(images);
+        circle = new Circle();
+        initialize();
+    }
+
     public DobbleCard(double centerX, double centerY, double radius, Image[] images) {
         setImages(images);
         circle = new Circle(centerX, centerY, radius);
         circle.setFill(Color.WHITE);
-        ImageView view = new ImageView(images[0]);
-        view.xProperty().bind(circle.centerXProperty());
-        view.yProperty().bind(circle.centerYProperty());
-        getChildren().addAll(circle, view);
+        initialize();
+    }
+
+    private void initialize() {
+        circle.setFill(Color.WHITE);
+        //ImageView view = new ImageView(images[0]);
+        //view.xProperty().bind(circle.centerXProperty());
+        //view.yProperty().bind(circle.centerYProperty());
+
+        //layout.layoutImages(this, new ImageView[8]);
+        getChildren().addAll(circle);
+        circle.toBack();
     }
 
     private void setImages(Image[] images) {
         if (images.length != IMAGES_COUNT)
             throw new IllegalArgumentException("A card should contain " + IMAGES_COUNT + " images");
         this.images = images;
+    }
+
+    public void layoutImages() {
+        ImageView[] imageViews = new ImageView[8];
+        for (int i = 0; i < 8; i++)
+            imageViews[i] = new ImageView(images[i]);
+        layout.layoutImages(this, imageViews);
+        getChildren().addAll(imageViews);
+
     }
 
     public DoubleProperty getRadiusProperty() {

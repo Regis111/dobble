@@ -1,4 +1,11 @@
 package pl.dobblepolskab.model.servergamesession.playersmanager.player;
 
-public class HumanPlayer {
+import pl.dobblepolskab.common.gamecontent.GameCard;
+
+public class HumanPlayer extends Player{
+    public HumanPlayer(String name, String clientId, GameCard firstCard){
+        super(name, clientId, firstCard);
+    }
+
+
 }

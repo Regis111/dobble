@@ -1,4 +1,37 @@
 package pl.dobblepolskab.model.servergamesession.playersmanager.player;
 
-public class Player {
+import pl.dobblepolskab.common.gamecontent.GameCard;
+import pl.dobblepolskab.model.servergamesession.gamecardsstack.PlayerStack;
+
+public abstract class Player {
+    private String name;
+    private String clientId;
+    private PlayerStack cardsStack;
+
+    private void initObject(){
+        cardsStack = new PlayerStack();
+    }
+
+    public Player(String name, String clientId, GameCard firstCard){
+        initObject();
+        this.name = name;
+        this.clientId = clientId;
+        cardsStack.initPlayerStack(firstCard);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getClientId() {
+        return clientId;
+    }
+
+    public void pushCardOnStack(GameCard card){
+        cardsStack.pushCard(card);
+    }
+
+    public int getPoints(){
+        return cardsStack.getCardsCount();
+    }
 }

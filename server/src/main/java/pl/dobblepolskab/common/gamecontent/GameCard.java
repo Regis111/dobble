@@ -4,22 +4,22 @@ public class GameCard {
     private long cardId;
     private int[] values;
 
-    private void initClass() {
+    private void initObject() {
         cardId = 0;
         values = new int[8];
     }
 
     public GameCard() {
-        initClass();
+        initObject();
     }
 
     public GameCard(long cardId) {
-        initClass();
+        initObject();
         setCardId(cardId);
     }
 
     public GameCard(int[] valuesArray) {
-        initClass();
+        initObject();
         setValues(valuesArray);
     }
 

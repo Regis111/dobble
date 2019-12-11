@@ -16,7 +16,7 @@ public class GameContentBox implements GameContentSource {
     private int nextCardId;
     private boolean gameContentCorupted;
 
-    private void initClass() {
+    private void initObject() {
         directoryPath = "";
         imagesPaths = new String[50];
         cardsDefs = new int[55 * 8];
@@ -26,11 +26,11 @@ public class GameContentBox implements GameContentSource {
     }
 
     public GameContentBox() {
-        initClass();
+        initObject();
     }
 
     public GameContentBox(String directoryPath) {
-        initClass();
+        initObject();
         bindToDirectory(directoryPath);
     }
 

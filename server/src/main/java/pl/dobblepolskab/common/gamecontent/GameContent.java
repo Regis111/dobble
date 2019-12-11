@@ -7,7 +7,7 @@ public class GameContent {
     private HashMap<Long, GameCard> gameCards;
     private HashMap<Integer, GameCardSymbol> gameCardSymbols;
 
-    private void initClass() {
+    private void initObject() {
         completed = false;
         gameCards = new HashMap<>();
         gameCardSymbols = new HashMap<>();
@@ -21,7 +21,7 @@ public class GameContent {
     }
 
     public GameContent() {
-        initClass();
+        initObject();
     }
 
     public boolean addGameCard(GameCard gameCard) {
@@ -48,6 +48,11 @@ public class GameContent {
         while (addGameCardSymbol(gameContentSource.getNextGameCardSymbol())) ;
         while (addGameCard(gameContentSource.getNextGameCard())) ;
         return completed;
+    }
+
+    public boolean containsCard(GameCard gameCard){
+        return gameCards.containsKey(gameCard.getCardId());
+
     }
 
 }

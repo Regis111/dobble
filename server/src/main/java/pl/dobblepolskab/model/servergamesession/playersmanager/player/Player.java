@@ -1,6 +1,7 @@
 package pl.dobblepolskab.model.servergamesession.playersmanager.player;
 
 import pl.dobblepolskab.common.gamecontent.GameCard;
+import pl.dobblepolskab.common.gamecontent.GameContent;
 import pl.dobblepolskab.model.servergamesession.gamecardsstack.PlayerStack;
 
 public abstract class Player {
@@ -8,14 +9,10 @@ public abstract class Player {
     private String clientId;
     private PlayerStack cardsStack;
 
-    private void initObject(){
-        cardsStack = new PlayerStack();
-    }
-
-    public Player(String name, String clientId){
-        initObject();
+    public Player(GameContent gameContent, String name, String clientId){
         this.name = name;
         this.clientId = clientId;
+        cardsStack = new PlayerStack(gameContent);
     }
 
     public void preparePlayerToGame(GameCard firstCard){

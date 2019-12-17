@@ -6,15 +6,17 @@ import org.junit.Test;
 import pl.dobblepolskab.common.gamecontent.GameContent;
 
 public class PlayersManagerTest {
+    private GameContent gameContent;
     @Before
     public void initTest() {
+        gameContent = new GameContent();
     }
 
     @Test
     public void addHumanPlayerTest() {
         // given
         String errorString = "Chacking if the player is currently added to list doesn't work!";
-        PlayersManager playersManager = new PlayersManager();
+        PlayersManager playersManager = new PlayersManager(gameContent);
 
         // when
         boolean[] addsPassed = new boolean[]{
@@ -35,7 +37,7 @@ public class PlayersManagerTest {
     public void addComputerlayerTest() {
         // given
         String errorString = "Chacking if the are 8 players in list doesn't work!";
-        PlayersManager playersManager = new PlayersManager();
+        PlayersManager playersManager = new PlayersManager(gameContent);
 
         // when
         boolean[] addsPassed = new boolean[9];

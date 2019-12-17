@@ -6,11 +6,6 @@ public class GameCardSymbol {
     private int symbolId;
     private BufferedImage image;
 
-    private void initObject(){
-        symbolId = 0;
-        image = null;
-    }
-
     public GameCardSymbol(){
         initObject();
     }
@@ -18,6 +13,11 @@ public class GameCardSymbol {
     public GameCardSymbol(BufferedImage symbolImage){
         initObject();
         setImage(symbolImage);
+    }
+
+    private void initObject(){
+        symbolId = 0;
+        image = null;
     }
 
     public void setImage(BufferedImage symbolImage){

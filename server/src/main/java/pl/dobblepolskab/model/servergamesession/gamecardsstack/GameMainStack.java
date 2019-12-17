@@ -4,25 +4,27 @@ import pl.dobblepolskab.common.gamecontent.GameCard;
 import pl.dobblepolskab.common.gamecontent.GameContent;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class GameMainStack extends GameCardsStack {
     private boolean initiated;
+
+    public GameMainStack(GameContent gameContent) {
+        super(gameContent);
+        initObject();
+    }
+
+    public GameMainStack(GameContent gameContent, List<GameCard> cardsToAdd) {
+        super(gameContent);
+        initObject();
+        initMainStack(cardsToAdd);
+    }
 
     private void initObject() {
         initiated = false;
     }
 
-    public GameMainStack(GameContent gameContent) {
-        setUpGameContent(gameContent);
-    }
-
-    public GameMainStack(GameContent gameContent, LinkedList<GameCard> cardsToAdd) {
-        super();
-        setUpGameContent(gameContent);
-        initMainStack(cardsToAdd);
-    }
-
-    public boolean initMainStack(LinkedList<GameCard> cardsToAdd) {
+    public boolean initMainStack(List<GameCard> cardsToAdd) {
         if(initiated)
             return false;
         for (GameCard curCard : cardsToAdd)

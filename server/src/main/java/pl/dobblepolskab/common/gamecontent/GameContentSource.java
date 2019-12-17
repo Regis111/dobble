@@ -1,7 +1,9 @@
 package pl.dobblepolskab.common.gamecontent;
 
-public interface GameContentSource {
-    GameCardSymbol getNextGameCardSymbol();
+import java.util.Optional;
 
-    GameCard getNextGameCard();
+public interface GameContentSource {
+    Optional<GameCardSymbol> getNextGameCardSymbol();
+
+    Optional<GameCard> getNextGameCard();
 }

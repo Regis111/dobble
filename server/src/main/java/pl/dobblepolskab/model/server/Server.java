@@ -13,12 +13,12 @@ public class Server {
     private ServerSocket serverSocket;
     private ServerGameSession serverGameSession;
 
-    private void initObject(){
-        initiated = false;
-    }
-
     private Server(){
         initObject();
+    }
+
+    private void initObject(){
+        initiated = false;
     }
 
     public static Server getInstance(){
@@ -30,8 +30,13 @@ public class Server {
             return;
         this.configurator = configurator;
         serverSocket = new AssociationBasedServerSocket("dobbleServer");
-        AIModule.setUpServerSocketInfo((AssociationBasedServerSocket)serverSocket);
         initiated = true;
+    }
+
+    public int getServerPortId(){
+        if(!initiated)
+            return -1;
+        return configurator.getServerPortId();
     }
 
     public boolean setNumberOfPlayer(int value){

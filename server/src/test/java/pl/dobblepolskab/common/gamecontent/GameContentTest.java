@@ -33,9 +33,9 @@ public class GameContentTest {
         String errorString = "Chacking if the same graphics already exists in the game content doesn't work!";
 
         // when
-        boolean firstAddPassed = gameContent.addGameCardSymbol(gameContentBox.getNextGameCardSymbol());
-        boolean secondAddPassed = gameContent.addGameCardSymbol(gameContentBox.getNextGameCardSymbol());
-        boolean thirdAddPassed = gameContent.addGameCardSymbol(gameContentBox.getNextGameCardSymbol());
+        boolean firstAddPassed = gameContent.addGameCardSymbol(gameContentBox.getNextGameCardSymbol().get());
+        boolean secondAddPassed = gameContent.addGameCardSymbol(gameContentBox.getNextGameCardSymbol().get());
+        boolean thirdAddPassed = gameContent.addGameCardSymbol(gameContentBox.getNextGameCardSymbol().get());
 
         //then
         Assert.assertTrue(errorString, firstAddPassed);

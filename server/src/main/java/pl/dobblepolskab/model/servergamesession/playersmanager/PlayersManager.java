@@ -8,18 +8,22 @@ import pl.dobblepolskab.model.servergamesession.playersmanager.player.Player;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 
 public class PlayersManager {
-    private LinkedList<Player> playersList;
+    private List<Player> playersList;
     private int computerPlayersNum;
+    private GameContent gameContent;
+    public static final int maxPlayersNumber = 8;
 
-    private void initObject(){
-        playersList = new LinkedList<>();
-        computerPlayersNum = 0;
+    public PlayersManager(GameContent gameContent){
+        initObject();
+        this.gameContent = gameContent;
     }
 
-    public PlayersManager(){
-        initObject();
+    private void initObject(){
+        playersList = new ArrayList<>();
+        computerPlayersNum = 0;
     }
 
     public boolean checkIfPlayerExists(String name, String clientId){
@@ -33,18 +37,18 @@ public class PlayersManager {
     }
 
     public boolean addHumanPlayer(String name, String clientId){
-        if(playersList.size() == 8 || checkIfPlayerExists(name, clientId))
+        if(playersList.size() == maxPlayersNumber || checkIfPlayerExists(name, clientId))
             return false;
-        HumanPlayer newHumanPlayer = new HumanPlayer(name, clientId);
+        HumanPlayer newHumanPlayer = new HumanPlayer(gameContent, name, clientId);
         playersList.add(newHumanPlayer);
         return true;
     }
 
     public boolean addComputerPlayer(){
-        if(playersList.size() == 8)
+        if(playersList.size() == maxPlayersNumber)
             return false;
         String name = "Computer " + (computerPlayersNum+1);
-        ComputerPlayer newComputerPlayer = new ComputerPlayer(name, name, 1);
+        ComputerPlayer newComputerPlayer = new ComputerPlayer(gameContent, name, name, 1);
         playersList.add(newComputerPlayer);
         computerPlayersNum++;
         return true;

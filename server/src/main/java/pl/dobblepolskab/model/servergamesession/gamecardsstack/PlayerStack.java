@@ -6,16 +6,19 @@ import pl.dobblepolskab.common.gamecontent.GameContent;
 public class PlayerStack extends GameCardsStack {
     private boolean initiated;
 
+    public PlayerStack(GameContent gameContent) {
+        super(gameContent);
+        initObject();
+    }
+
+    public PlayerStack(GameContent gameContent, GameCard firstCard) {
+        super(gameContent);
+        initObject();
+        initPlayerStack(firstCard);
+    }
+
     private void initObject() {
         initiated = false;
-    }
-
-    public PlayerStack() {
-        super();
-    }
-
-    public PlayerStack(GameCard firstCard) {
-        initPlayerStack(firstCard);
     }
 
     public boolean initPlayerStack(GameCard firstCard) {

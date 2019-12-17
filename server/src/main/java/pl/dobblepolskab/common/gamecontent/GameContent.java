@@ -1,12 +1,17 @@
 package pl.dobblepolskab.common.gamecontent;
 
-import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.*;
 
 public class GameContent {
     private boolean completed;
     private HashMap<Long, GameCard> gameCards;
     private HashMap<Integer, GameCardSymbol> gameCardSymbols;
+    public static final int finalGameCardSymbolsNumber = 50;
+    public static final int finalGameCardsNumber = 55;
+
+    public GameContent() {
+        initObject();
+    }
 
     private void initObject() {
         completed = false;
@@ -14,19 +19,12 @@ public class GameContent {
         gameCardSymbols = new HashMap<>();
     }
 
-    private boolean checkCompletion() {
-        if (gameCards.size() < 55 || gameCardSymbols.size() < 50)
-            return false;
-        completed = true;
-        return true;
-    }
-
-    public GameContent() {
-        initObject();
+    private void checkCompletion() {
+        completed = !(gameCards.size() < finalGameCardsNumber || gameCardSymbols.size() < finalGameCardSymbolsNumber);
     }
 
     public boolean addGameCard(GameCard gameCard) {
-        if (gameCards.size() >= 55)
+        if (gameCards.size() >= finalGameCardsNumber)
             return false;
         if (gameCards.containsKey(gameCard.getCardId()))
             return false;
@@ -36,7 +34,7 @@ public class GameContent {
     }
 
     public boolean addGameCardSymbol(GameCardSymbol gameCardSymbol) {
-        if (gameCardSymbols.size() >= 50)
+        if (gameCardSymbols.size() >= finalGameCardSymbolsNumber)
             return false;
         if (gameCardSymbols.containsKey(gameCardSymbol.getSymbolId()))
             return false;
@@ -46,8 +44,22 @@ public class GameContent {
     }
 
     public boolean importGameContent(GameContentSource gameContentSource) {
-        while (addGameCardSymbol(gameContentSource.getNextGameCardSymbol())) ;
-        while (addGameCard(gameContentSource.getNextGameCard())) ;
+        Optional<GameCardSymbol> gameCardSymbolOptional;
+        do {
+            gameCardSymbolOptional = gameContentSource.getNextGameCardSymbol();
+            if(!gameCardSymbolOptional.isPresent())
+                break;
+            addGameCardSymbol(gameCardSymbolOptional.get());
+        }
+        while (true);
+        Optional<GameCard> gameCardOptional;
+        do {
+            gameCardOptional = gameContentSource.getNextGameCard();
+            if(!gameCardOptional.isPresent())
+                break;
+            addGameCard(gameCardOptional.get());
+        }
+        while (true);
         return completed;
     }
 
@@ -56,10 +68,8 @@ public class GameContent {
 
     }
 
-    public LinkedList<GameCard> getCards(){
-        if(!completed)
-            return new LinkedList<>();
-        return new LinkedList<>(gameCards.values());
+    public List<GameCard> getCards(){
+        return ((!completed) ? (Collections.emptyList()) : new ArrayList<>(gameCards.values()));
     }
 
 }

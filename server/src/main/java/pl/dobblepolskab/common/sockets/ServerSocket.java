@@ -8,13 +8,13 @@ public abstract class ServerSocket {
     private String serverId;
     private ArrayList<String> clientsList;
 
-    private void initObject(){
-        clientsList = new ArrayList<>();
-    }
-
     protected ServerSocket(String serverId){
         initObject();
         this.serverId = serverId;
+    }
+
+    private void initObject(){
+        clientsList = new ArrayList<>();
     }
 
     protected abstract void sendToClient(String clientId, Message message);

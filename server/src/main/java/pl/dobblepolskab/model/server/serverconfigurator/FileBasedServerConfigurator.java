@@ -8,6 +8,11 @@ import java.io.IOException;
 public class FileBasedServerConfigurator extends ServerConfigurator{
     private String filePath;
 
+    public FileBasedServerConfigurator(String configFilePath){
+        filePath = configFilePath;
+        readConfiguration();
+    }
+
     private void readConfiguration(){
         File file = new File(filePath);
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
@@ -32,10 +37,5 @@ public class FileBasedServerConfigurator extends ServerConfigurator{
         if(getAiIntelligenceLevel() == 0 || getServerPortId() == 0)
             return;
         completed = true;
-    }
-
-    public FileBasedServerConfigurator(String configFilePath){
-        filePath = configFilePath;
-        readConfiguration();
     }
 }

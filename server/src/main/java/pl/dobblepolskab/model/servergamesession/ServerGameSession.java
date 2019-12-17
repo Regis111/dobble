@@ -16,19 +16,15 @@ public class ServerGameSession {
     private PlayersManager playersManager;
     private ServerSocket serverSocket;
 
-    private void initObject(){
-    }
-
     public ServerGameSession(GameContent gameContent, ServerSocket serverSocket){
-        initObject();
         this.gameContent = gameContent;
         this.serverSocket = serverSocket;
         mainStack = new GameMainStack(gameContent);
-        playersManager = new PlayersManager();
+        playersManager = new PlayersManager(gameContent);
     }
 
     public void startGameSession(){
-        LinkedList<GameCard> cardsToGiveOut = gameContent.getCards();
+        LinkedList<GameCard> cardsToGiveOut = new LinkedList<>(gameContent.getCards());
         Collections.shuffle(cardsToGiveOut);
         playersManager.preparePlayersToGame(cardsToGiveOut);
         mainStack.initMainStack(cardsToGiveOut);

@@ -6,34 +6,23 @@ import pl.dobblepolskab.common.gamecontent.GameContent;
 import java.util.LinkedList;
 
 public abstract class GameCardsStack {
-    private static GameContent gameContent;
+    private GameContent gameContent;
     private LinkedList<GameCard> cardsOnStack;
 
-    static {
-        gameContent = null;
+    protected GameCardsStack(GameContent gameContent) {
+        initObject();
+        setUpGameContent(gameContent);
     }
 
     private void initObject() {
         cardsOnStack = new LinkedList<>();
     }
 
-    private boolean isNotSetUpped(){
-        return (gameContent == null);
-    }
-
-    protected GameCardsStack() {
-        initObject();
-    }
-
-    protected void setUpGameContent(GameContent content) {
-        if(!isNotSetUpped())
-            return;
+    private void setUpGameContent(GameContent content) {
         gameContent = content;
     }
 
     protected boolean push(GameCard card) {
-        if(isNotSetUpped())
-            return false;
         if (gameContent.containsCard(card)) {
             cardsOnStack.push(card);
             return true;
@@ -42,20 +31,14 @@ public abstract class GameCardsStack {
     }
 
     protected GameCard pop() {
-        if(isNotSetUpped())
-            return null;
         return cardsOnStack.pop();
     }
 
     protected GameCard getCardOnTop() {
-        if(isNotSetUpped())
-            return null;
         return cardsOnStack.peek();
     }
 
     protected int getStackSize() {
-        if(isNotSetUpped())
-            return -1;
         return cardsOnStack.size();
     }
 

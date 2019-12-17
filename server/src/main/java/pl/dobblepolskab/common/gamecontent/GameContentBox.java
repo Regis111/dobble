@@ -7,31 +7,34 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Optional;
 
 public class GameContentBox implements GameContentSource {
     private String directoryPath;
-    private String[] imagesPaths;
-    private int[] cardsDefs;
+    private final String[] imagesPaths;
+    private final int[] cardsDefs;
     private int nextSymbolId;
     private int nextCardId;
     private boolean gameContentCorupted;
 
-    private void initObject() {
-        directoryPath = "";
-        imagesPaths = new String[50];
-        cardsDefs = new int[55 * 8];
-        nextSymbolId = 0;
-        nextCardId = 0;
-        gameContentCorupted = false;
-    }
-
     public GameContentBox() {
         initObject();
+        imagesPaths = new String[GameContent.finalGameCardSymbolsNumber];
+        cardsDefs = new int[GameContent.finalGameCardsNumber * GameCard.finalSymbolsNumber];
     }
 
     public GameContentBox(String directoryPath) {
         initObject();
+        imagesPaths = new String[GameContent.finalGameCardSymbolsNumber];
+        cardsDefs = new int[GameContent.finalGameCardsNumber * GameCard.finalSymbolsNumber];
         bindToDirectory(directoryPath);
+    }
+
+    private void initObject() {
+        directoryPath = "";
+        nextSymbolId = 0;
+        nextCardId = 0;
+        gameContentCorupted = false;
     }
 
     public boolean bindToDirectory(String directoryPath) {
@@ -44,19 +47,19 @@ public class GameContentBox implements GameContentSource {
                 if (fileLine.matches("(.*)S: (.*)")) {
                     String[] def = fileLine.split("S: ");
                     int symbolId = Integer.parseInt(def[0]) - 1;
-                    if(symbolId < 0 || symbolId > 49)
+                    if(symbolId < 0 || symbolId > GameContent.finalGameCardSymbolsNumber - 1)
                         return false;
                     imagesPaths[symbolId] = def[1];
                 }
                 if (fileLine.matches("(.*)C: (.*)")) {
                     String[] def = fileLine.split("C: ");
                     int cardId = Integer.parseInt(def[0]) - 1;
-                    if(cardId < 0  || cardId > 54)
+                    if(cardId < 0  || cardId > GameContent.finalGameCardsNumber - 1)
                         return false;
                     String[] cardSymbolsStr = def[1].split(", ");
                     int symbolId = 0;
                     for (String cardSymbolStr : cardSymbolsStr) {
-                        cardsDefs[cardId * 8 + symbolId++] = Integer.parseInt(cardSymbolStr);
+                        cardsDefs[cardId * GameCard.finalSymbolsNumber + symbolId++] = Integer.parseInt(cardSymbolStr);
                     }
                 }
             }
@@ -69,7 +72,7 @@ public class GameContentBox implements GameContentSource {
                 return false;
         }
         for (int tempValue : cardsDefs) {
-            if (tempValue < 1 || tempValue > 50)
+            if (tempValue < 1 || tempValue > GameContent.finalGameCardSymbolsNumber)
                 return false;
         }
         gameContentCorupted = false;
@@ -80,26 +83,27 @@ public class GameContentBox implements GameContentSource {
     }
 
     @Override
-    public GameCardSymbol getNextGameCardSymbol() {
+    public Optional<GameCardSymbol> getNextGameCardSymbol() {
         if (gameContentCorupted)
-            return null;
+            return Optional.empty();
         File imageFile = new File(directoryPath + File.separator + imagesPaths[nextSymbolId]);
         try {
             BufferedImage image = ImageIO.read(imageFile);
             nextSymbolId++;
-            return new GameCardSymbol(image);
+            return Optional.of(new GameCardSymbol(image));
         } catch (IOException e) {
             gameContentCorupted = true;
-            return null;
+            return Optional.empty();
         }
     }
 
     @Override
-    public GameCard getNextGameCard() {
+    public Optional<GameCard> getNextGameCard() {
         if (gameContentCorupted)
-            return null;
-        int [] cardValues = Arrays.copyOfRange(cardsDefs, nextCardId* 8, (nextCardId+1)*8);
+            return Optional.empty();
+        int [] cardValues = Arrays.copyOfRange(cardsDefs, nextCardId* GameCard.finalSymbolsNumber,
+                (nextCardId+1)*GameCard.finalSymbolsNumber);
         nextCardId++;
-        return new GameCard(cardValues);
+        return Optional.of(new GameCard(cardValues));
     }
 }

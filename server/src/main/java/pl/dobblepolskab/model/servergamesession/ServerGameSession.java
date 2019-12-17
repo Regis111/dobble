@@ -11,10 +11,10 @@ import java.util.Collections;
 import java.util.LinkedList;
 
 public class ServerGameSession {
-    GameContent gameContent;
-    GameMainStack mainStack;
-    PlayersManager playersManager;
-    ServerSocket serverSocket;
+    private GameContent gameContent;
+    private GameMainStack mainStack;
+    private PlayersManager playersManager;
+    private ServerSocket serverSocket;
 
     private void initObject(){
     }

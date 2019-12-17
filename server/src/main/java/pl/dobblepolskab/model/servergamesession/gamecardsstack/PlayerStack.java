@@ -15,7 +15,6 @@ public class PlayerStack extends GameCardsStack {
     }
 
     public PlayerStack(GameCard firstCard) {
-        super();
         initPlayerStack(firstCard);
     }
 

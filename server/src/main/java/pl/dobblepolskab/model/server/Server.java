@@ -1,6 +1,5 @@
 package pl.dobblepolskab.model.server;
 
-import com.sun.tools.javac.util.Pair;
 import pl.dobblepolskab.common.sockets.AssociationBasedServerSocket;
 import pl.dobblepolskab.common.sockets.ServerSocket;
 import pl.dobblepolskab.model.server.serverconfigurator.ServerConfigurator;
@@ -67,8 +66,8 @@ public class Server {
         return true;
     }
 
-    public Pair<Integer, Integer> getNextTurnState(String playerClientId){
-        return new Pair<>(0, 0);
+    public int[] getNextTurnState(String playerClientId){
+        return new int[]{0, 0};
     }
 
     public boolean endGameSession(){

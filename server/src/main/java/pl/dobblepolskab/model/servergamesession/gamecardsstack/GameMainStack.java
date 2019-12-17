@@ -13,7 +13,6 @@ public class GameMainStack extends GameCardsStack {
     }
 
     public GameMainStack(GameContent gameContent) {
-        super();
         setUpGameContent(gameContent);
     }
 

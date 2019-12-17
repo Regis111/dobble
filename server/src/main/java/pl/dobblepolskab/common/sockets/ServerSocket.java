@@ -12,7 +12,7 @@ public abstract class ServerSocket {
         clientsList = new ArrayList<>();
     }
 
-    public ServerSocket(String serverId){
+    protected ServerSocket(String serverId){
         initObject();
         this.serverId = serverId;
     }

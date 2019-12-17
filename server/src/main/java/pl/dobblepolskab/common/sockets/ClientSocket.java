@@ -6,7 +6,7 @@ public abstract class ClientSocket {
     private String clientId;
     private String serverId;
 
-    public ClientSocket(String clientId){
+    protected ClientSocket(String clientId){
         this.clientId = clientId;
     }
 

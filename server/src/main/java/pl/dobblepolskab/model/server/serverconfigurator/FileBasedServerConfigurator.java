@@ -6,7 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class FileBasedServerConfigurator extends ServerConfigurator{
-    String filePath;
+    private String filePath;
 
     private void readConfiguration(){
         File file = new File(filePath);
@@ -34,8 +34,7 @@ public class FileBasedServerConfigurator extends ServerConfigurator{
         completed = true;
     }
 
-    FileBasedServerConfigurator(String configFilePath){
-        super();
+    public FileBasedServerConfigurator(String configFilePath){
         filePath = configFilePath;
         readConfiguration();
     }

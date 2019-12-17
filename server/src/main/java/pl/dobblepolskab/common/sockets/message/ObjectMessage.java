@@ -1,7 +1,7 @@
 package pl.dobblepolskab.common.sockets.message;
 
 public class ObjectMessage extends Message{
-    Object data;
+    private Object data;
 
     public ObjectMessage(String sender, Object data){
         super(sender);

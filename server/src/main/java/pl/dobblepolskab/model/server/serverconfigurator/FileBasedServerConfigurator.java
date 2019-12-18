@@ -30,6 +30,11 @@ public class FileBasedServerConfigurator extends ServerConfigurator{
                     int portId = Integer.parseInt(def[1]);
                     setServerPortId(portId);
                 }
+                if (fileLine.matches("GameContentBoxPath: (.*)")) {
+                    String[] def = fileLine.split("GameContentBoxPath: ");
+                    String gameContentBoxPath = def[1];
+                    setGameContentBoxPath(gameContentBoxPath);
+                }
             }
         } catch (IOException e) {
             System.err.println("File " + filePath + " not found, so cannot configure Dobble Server Application.");

@@ -34,4 +34,8 @@ public abstract class Player {
     public int getPoints(){
         return cardsStack.getCardsCount();
     }
+
+    public GameCard getTopCard(){
+        return cardsStack.getTopCard();
+    }
 }

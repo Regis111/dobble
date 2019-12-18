@@ -4,8 +4,8 @@ import java.util.*;
 
 public class GameContent {
     private boolean completed;
-    private HashMap<Long, GameCard> gameCards;
-    private HashMap<Integer, GameCardSymbol> gameCardSymbols;
+    private ArrayList<GameCard> gameCards;
+    private ArrayList<GameCardSymbol> gameCardSymbols;
     public static final int finalGameCardSymbolsNumber = 50;
     public static final int finalGameCardsNumber = 55;
 
@@ -15,8 +15,8 @@ public class GameContent {
 
     private void initObject() {
         completed = false;
-        gameCards = new HashMap<>();
-        gameCardSymbols = new HashMap<>();
+        gameCards = new ArrayList<>();
+        gameCardSymbols = new ArrayList<>();
     }
 
     private void checkCompletion() {
@@ -26,9 +26,9 @@ public class GameContent {
     public boolean addGameCard(GameCard gameCard) {
         if (gameCards.size() >= finalGameCardsNumber)
             return false;
-        if (gameCards.containsKey(gameCard.getCardId()))
+        if (gameCards.contains(gameCard))
             return false;
-        gameCards.put(gameCard.getCardId(), gameCard);
+        gameCards.add(gameCard);
         checkCompletion();
         return true;
     }
@@ -36,9 +36,9 @@ public class GameContent {
     public boolean addGameCardSymbol(GameCardSymbol gameCardSymbol) {
         if (gameCardSymbols.size() >= finalGameCardSymbolsNumber)
             return false;
-        if (gameCardSymbols.containsKey(gameCardSymbol.getSymbolId()))
+        if (gameCardSymbols.contains(gameCardSymbol))
             return false;
-        gameCardSymbols.put(gameCardSymbol.getSymbolId(), gameCardSymbol);
+        gameCardSymbols.add(gameCardSymbol);
         checkCompletion();
         return true;
     }
@@ -64,12 +64,17 @@ public class GameContent {
     }
 
     public boolean containsCard(GameCard gameCard){
-        return gameCards.containsKey(gameCard.getCardId());
+        ArrayList<GameCard> list = new ArrayList<>();
+        return gameCards.contains(gameCard);
 
     }
 
+    public int getCardIdInModel(GameCard gameCard){
+        return gameCards.indexOf(gameCard);
+    }
+
     public List<GameCard> getCards(){
-        return ((!completed) ? (Collections.emptyList()) : new ArrayList<>(gameCards.values()));
+        return ((!completed) ? (Collections.emptyList()) : new ArrayList<>(gameCards));
     }
 
 }

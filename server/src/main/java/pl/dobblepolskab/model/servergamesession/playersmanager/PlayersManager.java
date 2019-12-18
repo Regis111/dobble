@@ -7,11 +7,12 @@ import pl.dobblepolskab.model.servergamesession.playersmanager.player.HumanPlaye
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 public class PlayersManager {
-    private List<Player> playersList;
+    private HashMap<String, Player> playersList;
     private int computerPlayersNum;
     private GameContent gameContent;
     public static final int maxPlayersNumber = 8;
@@ -22,25 +23,20 @@ public class PlayersManager {
     }
 
     private void initObject(){
-        playersList = new ArrayList<>();
+        playersList = new HashMap<>();
         computerPlayersNum = 0;
     }
 
     public boolean checkIfPlayerExists(String name, String clientId){
-        for(Player player : playersList){
-            if(player.getName().equals(name))
-                return true;
-            if(player.getClientId().equals(clientId))
-                return true;
-        }
-        return false;
+        Player foundPlayer = playersList.get(clientId);
+        return (!(foundPlayer == null || !foundPlayer.getName().equals(name)));
     }
 
     public boolean addHumanPlayer(String name, String clientId){
         if(playersList.size() == maxPlayersNumber || checkIfPlayerExists(name, clientId))
             return false;
         HumanPlayer newHumanPlayer = new HumanPlayer(gameContent, name, clientId);
-        playersList.add(newHumanPlayer);
+        playersList.put(clientId, newHumanPlayer);
         return true;
     }
 
@@ -49,16 +45,24 @@ public class PlayersManager {
             return false;
         String name = "Computer " + (computerPlayersNum+1);
         ComputerPlayer newComputerPlayer = new ComputerPlayer(gameContent, name, name, 1);
-        playersList.add(newComputerPlayer);
+        playersList.put(name, newComputerPlayer);
         computerPlayersNum++;
         return true;
     }
 
     public void preparePlayersToGame(LinkedList<GameCard> cardsToGiveOut){
-        for(Player currentPlayer : playersList){
+        playersList.forEach((playerClientId, player) -> {
             GameCard firstCard = cardsToGiveOut.pop();
-            currentPlayer.preparePlayerToGame(firstCard);
-        }
+            player.preparePlayerToGame(firstCard);
+        });
+    }
+
+    public GameCard getTopCardOfPlayer(String playerClientId){
+        return playersList.get(playerClientId).getTopCard();
+    }
+
+    public void pushGameCardOnPlayerStack(String playerClientId, GameCard gameCard){
+        playersList.get(playerClientId).pushCardOnStack(gameCard);
     }
 
 }

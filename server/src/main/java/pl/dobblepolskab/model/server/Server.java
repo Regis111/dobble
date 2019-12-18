@@ -1,5 +1,7 @@
 package pl.dobblepolskab.model.server;
 
+import pl.dobblepolskab.common.gamecontent.GameContent;
+import pl.dobblepolskab.common.gamecontent.GameContentBox;
 import pl.dobblepolskab.common.sockets.AssociationBasedServerSocket;
 import pl.dobblepolskab.common.sockets.ServerSocket;
 import pl.dobblepolskab.model.server.serverconfigurator.ServerConfigurator;
@@ -12,6 +14,7 @@ public class Server {
     private ServerConfigurator configurator;
     private ServerSocket serverSocket;
     private ServerGameSession serverGameSession;
+    private GameContent gameContent;
 
     private Server(){
         initObject();
@@ -30,6 +33,10 @@ public class Server {
             return;
         this.configurator = configurator;
         serverSocket = new AssociationBasedServerSocket("dobbleServer");
+        GameContentBox gameContentBox = new GameContentBox(this.configurator.getGameContentBoxPath());
+        gameContent = new GameContent();
+        gameContent.importGameContent(gameContentBox);
+        serverGameSession = new ServerGameSession(gameContent, serverSocket);
         initiated = true;
     }
 
@@ -56,27 +63,27 @@ public class Server {
     }
 
     public boolean startGameSession(){
-        return true;
+        return serverGameSession.startGameSession();
     }
 
     public boolean startNextShout(){
-        return true;
+        return serverGameSession.startNextShout();
     }
 
     public int getCurrentShoutId(){
-        return 1;
+        return serverGameSession.getShoutId();
     }
 
     public boolean isWinner(String playerClientId, int requestShoutId){
-        return true;
+        return serverGameSession.isWinner(playerClientId, requestShoutId);
     }
 
     public int[] getNextTurnState(String playerClientId){
-        return new int[]{0, 0};
+        return serverGameSession.getNextTopCardsForPlayer(playerClientId);
     }
 
     public boolean endGameSession(){
-        return false;
+        return serverGameSession.endGameSession();
     }
 
 

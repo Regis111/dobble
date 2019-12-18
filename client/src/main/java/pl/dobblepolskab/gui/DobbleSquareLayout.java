@@ -1,171 +1,127 @@
 package pl.dobblepolskab.gui;
 
+import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.Node;
 import javafx.scene.image.ImageView;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 public class DobbleSquareLayout implements DobbleCardLayout {
-    private Rectangle[] rectangles;// = new Rectangle[8];
-    private DoubleProperty squareShift;
-    private DoubleProperty rectangleLargeVerticalShift;
-    private DoubleProperty rectangleLargeHorizontalShift;
-    private DoubleProperty rectangleSmallVerticalShift;
-    private DoubleProperty rectangleSmallHorizontalShift;
-    private DobbleCard dobbleCard;
-    private DoubleProperty heightDifference;
+    private Rectangle[] rectangles = new Rectangle[8];
 
+    public DobbleSquareLayout(DobbleCard card) {
+        for (int i = 0; i < 8; i++)
+            rectangles[i] = new Rectangle();
 
-    public DobbleSquareLayout() {
-        rectangles = new Rectangle[8];
-        squareShift = new SimpleDoubleProperty();
-        rectangleLargeVerticalShift = new SimpleDoubleProperty();
-        rectangleLargeHorizontalShift = new SimpleDoubleProperty();
-        rectangleSmallVerticalShift = new SimpleDoubleProperty();
-        rectangleSmallHorizontalShift = new SimpleDoubleProperty();
+        DoubleProperty centerX = card.getCenterXProperty();
+        DoubleProperty centerY = card.getCenterYProperty();
+
+        DoubleBinding squareShift = card.getRadiusProperty().divide(Math.sqrt(2));
+
+        DoubleBinding xWithSquareShift = centerX.subtract(squareShift);
+        DoubleBinding yWithSquareShift = centerY.subtract(squareShift);
+
+        rectangles[0].xProperty().bind(xWithSquareShift);
+        rectangles[0].yProperty().bind(yWithSquareShift);
+
+        rectangles[1].xProperty().bind(centerX);
+        rectangles[1].yProperty().bind(yWithSquareShift);
+
+        rectangles[2].xProperty().bind(xWithSquareShift);
+        rectangles[2].yProperty().bind(centerY);
+
+        rectangles[3].xProperty().bind(centerX);
+        rectangles[3].yProperty().bind(centerY);
+
+        for (int i = 0; i < 4; i++) {
+            rectangles[i].heightProperty().bind(squareShift);
+            rectangles[i].widthProperty().bind(squareShift);
+        }
+
+        double outerShiftAngle = Math.toRadians(22.5);
+        DoubleBinding largeVerticalShift = card.getRadiusProperty().multiply(Math.sin(outerShiftAngle));
+        DoubleBinding largeHorizontalShift = card.getRadiusProperty().multiply(Math.cos(outerShiftAngle));
+
+        DoubleBinding smallHorizontalShift = largeHorizontalShift.subtract(squareShift);
+
+        rectangles[4].xProperty().bind(centerX.subtract(largeVerticalShift));
+        rectangles[4].yProperty().bind(centerY.subtract(largeHorizontalShift));
+        rectangles[4].heightProperty().bind(smallHorizontalShift);
+        rectangles[4].widthProperty().bind(largeVerticalShift.multiply(2));
+
+        rectangles[5].xProperty().bind(centerX.subtract(largeHorizontalShift));
+        rectangles[5].yProperty().bind(centerY.subtract(largeVerticalShift));
+        rectangles[5].heightProperty().bind(largeVerticalShift.multiply(2));
+        rectangles[5].widthProperty().bind(smallHorizontalShift);
+
+        rectangles[6].xProperty().bind(centerX.subtract(largeVerticalShift));
+        rectangles[6].yProperty().bind(centerY.add(squareShift));
+        rectangles[6].heightProperty().bind(smallHorizontalShift);
+        rectangles[6].widthProperty().bind(largeVerticalShift.multiply(2));
+
+        rectangles[7].xProperty().bind(centerX.add(squareShift));
+        rectangles[7].yProperty().bind(centerY.subtract(largeVerticalShift));
+        rectangles[7].heightProperty().bind(largeVerticalShift.multiply(2));
+        rectangles[7].widthProperty().bind(smallHorizontalShift);
     }
 
     @Override
-    public void layoutImages(DobbleCard card, ImageView[] imageViews) {
-        dobbleCard = card;
-        squareShift.bind(dobbleCard.getRadiusProperty().divide(Math.sqrt(2.0)));
-        rectangleLargeVerticalShift.bind(dobbleCard.getRadiusProperty().multiply(Math.sin(22.5 / 180.0 * Math.PI)));
-        rectangleLargeHorizontalShift.bind(dobbleCard.getRadiusProperty().multiply(Math.cos(22.5 / 180.0 * Math.PI)));
-        rectangleSmallVerticalShift.bind(rectangleLargeVerticalShift.subtract(squareShift));
-        rectangleSmallHorizontalShift.bind(rectangleLargeHorizontalShift.subtract(squareShift));
-
-        rectangles[0] = new Rectangle();
-        //rectangles[0].setStroke(Color.BLACK);
-        rectangles[0].setFill(Color.TRANSPARENT);
-        rectangles[0].xProperty().bind(dobbleCard.getCenterXProperty().subtract(squareShift));
-        rectangles[0].yProperty().bind(dobbleCard.getCenterYProperty().subtract(squareShift));
-        rectangles[0].heightProperty().bind(squareShift);
-        rectangles[0].widthProperty().bind(rectangles[0].heightProperty());
-
-        rectangles[1] = new Rectangle();
-        //rectangles[1].setStroke(Color.BLUE);
-        rectangles[1].setFill(Color.TRANSPARENT);
-        rectangles[1].xProperty().bind(dobbleCard.getCenterXProperty());
-        rectangles[1].yProperty().bind(dobbleCard.getCenterYProperty().subtract(squareShift));
-        rectangles[1].heightProperty().bind(squareShift);
-        rectangles[1].widthProperty().bind(rectangles[1].heightProperty());
-
-        rectangles[2] = new Rectangle();
-        //rectangles[2].setStroke(Color.RED);
-        rectangles[2].setFill(Color.TRANSPARENT);
-        rectangles[2].xProperty().bind(dobbleCard.getCenterXProperty().subtract(squareShift));
-        rectangles[2].yProperty().bind(dobbleCard.getCenterYProperty());
-        rectangles[2].heightProperty().bind(squareShift);
-        rectangles[2].widthProperty().bind(rectangles[2].heightProperty());
-
-        rectangles[3] = new Rectangle();
-        //rectangles[3].setStroke(Color.VIOLET);
-        rectangles[3].setFill(Color.TRANSPARENT);
-        rectangles[3].xProperty().bind(dobbleCard.getCenterXProperty());
-        rectangles[3].yProperty().bind(dobbleCard.getCenterYProperty());
-        rectangles[3].heightProperty().bind(squareShift);
-        rectangles[3].widthProperty().bind(rectangles[3].heightProperty());
-
-        rectangles[4] = new Rectangle();
-        //rectangles[4].setStroke(Color.PURPLE);
-        rectangles[4].setFill(Color.TRANSPARENT);
-        rectangles[4].xProperty().bind(dobbleCard.getCenterXProperty().subtract(rectangleLargeVerticalShift));
-        rectangles[4].yProperty().bind(dobbleCard.getCenterYProperty().subtract(rectangleLargeHorizontalShift));
-        rectangles[4].heightProperty().bind(rectangleLargeHorizontalShift.subtract(squareShift));
-        rectangles[4].widthProperty().bind(rectangleLargeVerticalShift.multiply(2));
-
-        rectangles[5] = new Rectangle();
-        //rectangles[5].setStroke(Color.MAGENTA);
-        rectangles[5].setFill(Color.TRANSPARENT);
-        rectangles[5].xProperty().bind(dobbleCard.getCenterXProperty().subtract(rectangleLargeHorizontalShift));
-        rectangles[5].yProperty().bind(dobbleCard.getCenterYProperty().subtract(rectangleLargeVerticalShift));
-        rectangles[5].heightProperty().bind(rectangleLargeVerticalShift.multiply(2));
-        rectangles[5].widthProperty().bind(rectangleLargeHorizontalShift.subtract(squareShift));
-
-        rectangles[6] = new Rectangle();
-        //rectangles[6].setStroke(Color.ORANGE);
-        rectangles[6].setFill(Color.TRANSPARENT);
-        rectangles[6].xProperty().bind(dobbleCard.getCenterXProperty().subtract(rectangleLargeVerticalShift));
-        rectangles[6].yProperty().bind(dobbleCard.getCenterYProperty().add(squareShift));
-        rectangles[6].heightProperty().bind(rectangleLargeHorizontalShift.subtract(squareShift));
-        rectangles[6].widthProperty().bind(rectangleLargeVerticalShift.multiply(2));
-
-        rectangles[7] = new Rectangle();
-        //rectangles[7].setStroke(Color.GRAY);
-        rectangles[7].setFill(Color.TRANSPARENT);
-        rectangles[7].xProperty().bind(dobbleCard.getCenterXProperty().add(squareShift));
-        rectangles[7].yProperty().bind(dobbleCard.getCenterYProperty().subtract(rectangleLargeVerticalShift));
-        rectangles[7].heightProperty().bind(rectangleLargeVerticalShift.multiply(2));
-        rectangles[7].widthProperty().bind(rectangleLargeHorizontalShift.subtract(squareShift));
-
-        for (int i = 0; i < 4; i++)
-            layoutSquareImage(rectangles[i], imageViews[i]);
-
-        for (int i = 4; i < 8; i++)
-            layoutRectangeImage(rectangles[i], imageViews[i]);
-
-        card.getChildren().addAll(rectangles);
+    public void layoutImages(ImageView[] imageViews) {
+        for (int i = 0; i < 8; i++)
+            layoutImageInsideRectangle(rectangles[i], imageViews[i]);
     }
 
-    private void layoutSquareImage(Rectangle square, ImageView imageView) {
+    /*
+     * I know that this piece of code may be ugly but it is a private method
+     * and enhances other parts of code.
+     */
+    private boolean isHeightLargerThanWidth(Node node) {
+        if (node instanceof Rectangle)
+            return ((Rectangle) node).getHeight() > ((Rectangle) node).getWidth();
+        if (node instanceof ImageView)
+            return ((ImageView) node).getFitHeight() > ((ImageView) node).getFitHeight();
+        return false;
+    }
+
+    private boolean isImageRotationNeeded(Rectangle rectangle, ImageView image) {
+        boolean borderShape = isHeightLargerThanWidth(rectangle);
+        boolean imageShape = isHeightLargerThanWidth(image);
+
+        return borderShape ^ imageShape;
+    }
+
+    /*
+     * To work correctly, this method requires the image to be smaller than
+     * border.
+     */
+    private void bindTopLeftCorner(Rectangle border, ImageView image) {
+        DoubleBinding xShift = border.widthProperty().subtract(image.fitWidthProperty());
+        xShift = xShift.divide(2);
+
+        image.xProperty().bind(border.xProperty().add(xShift));
+
+        DoubleBinding yShift = border.heightProperty().subtract(image.fitHeightProperty());
+        yShift = yShift.divide(2);
+
+        image.yProperty().bind(border.yProperty().add(yShift));
+    }
+
+    private void layoutImageInsideRectangle(Rectangle rectangle, ImageView imageView) {
+        /*
+         * Ensures that any scaling of the image does not disrupt the ratio of
+         * its dimensions.
+         */
         imageView.setPreserveRatio(true);
-        if (imageView.getFitHeight() > imageView.getFitWidth())
-            if (square.getHeight() > square.getWidth())
-                imageView.fitHeightProperty().bind(square.heightProperty().multiply(0.8));
-            else
-                imageView.fitHeightProperty().bind(square.widthProperty().multiply(0.8));
-        else
-        if (square.getHeight() > square.getWidth())
-            imageView.fitWidthProperty().bind(square.heightProperty().multiply(0.8));
-        else
-            imageView.fitWidthProperty().bind(square.widthProperty().multiply(0.8));
 
-        if (imageView.getFitWidth() == 0)
-            imageView.xProperty().bind(square.xProperty().add(squareShift.subtract(imageView.getImage().widthProperty()).divide(2)));
-        else
-            imageView.xProperty().bind(square.xProperty().add(squareShift.subtract(imageView.fitWidthProperty()).divide(2)));
+        // Bind the height and the width of the image
+        DoubleBinding heightBinding = rectangle.heightProperty().multiply(0.8);
+        DoubleBinding widthBinding = rectangle.widthProperty().multiply(0.8);
 
-        if (imageView.getFitHeight() == 0)
-            imageView.yProperty().bind(square.yProperty().add(squareShift.subtract(imageView.getImage().heightProperty()).divide(2)));
-        else
-            imageView.yProperty().bind(square.yProperty().add(squareShift.subtract(imageView.fitHeightProperty()).divide(2)));
+        imageView.fitHeightProperty().bind(heightBinding);
+        imageView.fitWidthProperty().bind(widthBinding);
+
+        bindTopLeftCorner(rectangle, imageView);
 
         imageView.setRotate(360 * Math.random());
-    }
-
-    private void layoutRectangeImage(Rectangle rectangle, ImageView imageView) {
-        imageView.setPreserveRatio(true);
-        boolean rotated = false;
-        if (imageView.getFitHeight() > imageView.getFitWidth())
-            if (rectangle.getHeight() > rectangle.getWidth())
-                imageView.fitHeightProperty().bind(rectangle.heightProperty().multiply(0.8));
-            else {
-                imageView.fitHeightProperty().bind(rectangle.widthProperty().multiply(0.8));
-                imageView.setRotate(90);
-                rotated = true;
-            }
-        else
-            if (rectangle.getHeight() > rectangle.getWidth()) {
-                imageView.fitWidthProperty().bind(rectangle.heightProperty().multiply(0.8));
-                imageView.setRotate(90);
-                rotated = true;
-            }
-            else
-                imageView.fitWidthProperty().bind(rectangle.widthProperty().multiply(0.8));
-
-        if (rotated)
-            imageView.xProperty().bind(rectangle.xProperty().subtract(rectangle.widthProperty()));
-        else
-            imageView.xProperty().bind(rectangle.xProperty());
-
-        if (imageView.getFitHeight() == 0)
-            imageView.yProperty().bind(rectangle.yProperty().add(rectangle.heightProperty().subtract(imageView.getImage().heightProperty()).divide(2)));
-        else
-            imageView.yProperty().bind(rectangle.yProperty().add(rectangle.heightProperty().subtract(imageView.fitHeightProperty()).divide(2)));
-        //imageView.yProperty().bind(rectangle.yProperty().add(rectangle.heightProperty().divide(2)));
-
-        imageView.setRotate(imageView.getRotate() + 180 * Math.round(Math.random()));
-
     }
 }

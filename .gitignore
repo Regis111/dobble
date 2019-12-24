@@ -1,7 +1,11 @@
+.gradle
 .idea
 out
+
 client/.gradle
 server/.gradle
+common/.gradle
 
 client/build
 server/build
+common/build

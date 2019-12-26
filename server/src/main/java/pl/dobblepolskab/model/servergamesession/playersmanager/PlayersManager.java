@@ -6,10 +6,8 @@ import pl.dobblepolskab.model.servergamesession.playersmanager.player.ComputerPl
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.HumanPlayer;
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class PlayersManager {
     private HashMap<String, Player> playersList;
@@ -65,4 +63,14 @@ public class PlayersManager {
         playersList.get(playerClientId).pushCardOnStack(gameCard);
     }
 
+    public Map<String, HumanPlayer> getHumanPlayers() {
+        return playersList
+                .entrySet().stream()
+                .filter(playerEntry -> playerEntry.getValue() instanceof HumanPlayer)
+                .collect(Collectors.toMap(Map.Entry::getKey, playerEntry -> (HumanPlayer)playerEntry.getValue()));
+    }
+
+    public Player getPlayer(String clientId) {
+        return this.playersList.get(clientId);
+    }
 }

@@ -1,4 +1,4 @@
-package pl.dobblepolskab.common.gamecontent;
+package gamecontent;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

@@ -1,4 +1,4 @@
-package pl.dobblepolskab.common.gamecontent;
+package gamecontent;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,0 +1,2 @@
+AIIntelligenceLevel: 1
+ServerPortId: 8091

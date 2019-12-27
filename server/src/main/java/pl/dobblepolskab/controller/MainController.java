@@ -73,9 +73,19 @@ public class MainController {
         // TODO new session establish
     }
 
-
-    @MessageMapping("app/init")
+    @MessageMapping("/init")
     public void init() {
 
     }
+
+    @MessageMapping("/deletePlayer")
+    public void deletePlayer() {
+
+    }
+
+    @MessageMapping("/addPlayer")
+    public void addPlayer() {
+
+    }
+
 }

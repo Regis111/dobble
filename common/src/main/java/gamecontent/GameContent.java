@@ -1,6 +1,9 @@
-package pl.dobblepolskab.common.gamecontent;
+package gamecontent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 public class GameContent {
     private boolean completed;

@@ -7,5 +7,6 @@ import java.util.Map;
 
 public interface PlayerService {
     Map<String, HumanPlayer> getHumanPlayers();
+
     Player getPlayer(String clientID);
 }

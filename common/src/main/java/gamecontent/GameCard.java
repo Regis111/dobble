@@ -1,4 +1,4 @@
-package pl.dobblepolskab.common.gamecontent;
+package gamecontent;
 
 import java.security.InvalidParameterException;
 

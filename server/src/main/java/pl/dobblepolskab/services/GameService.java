@@ -1,9 +1,11 @@
 package pl.dobblepolskab.services;
 
+import messages.Pair;
+
 public interface GameService {
     boolean isWinner(String clientID, int shoutID);
 
-    void getNextTurnState();
+    Pair getNextTurnState(String clientID);
 
     void startNextGameSession();
 }

@@ -1,18 +1,16 @@
 package pl.dobblepolskab.controller;
 
-import messages.Response;
-import messages.ResponseType;
+import messages.Pair;
+import messages.requests.*;
+import messages.responses.AmIWinnerResponse;
+import messages.responses.ResponseType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
-import org.springframework.messaging.simp.annotation.SendToUser;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.HumanPlayer;
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.Player;
-import pl.dobblepolskab.services.CommunicationService;
-import pl.dobblepolskab.services.GameService;
-import pl.dobblepolskab.services.PlayerService;
+import pl.dobblepolskab.services.*;
 
 import java.util.Map;
 import java.util.Random;
@@ -22,17 +20,25 @@ public class MainController {
 
     private final CommunicationService communicationService;
 
-    private PlayerService playerService;
+    private final PlayerService playerService;
 
-    private GameService gameService;
+    private final AdminPlayerService adminPlayerService;
+
+    private final GameService gameService;
+
+    private final SessionConfigurationService configurationService;
 
     @Autowired
     public MainController(CommunicationService communicationService,
                           PlayerService playerService,
-                          GameService gameService) {
+                          GameService gameService,
+                          AdminPlayerService adminPlayerService,
+                          SessionConfigurationService sessionConfigurationService) {
         this.communicationService = communicationService;
         this.playerService = playerService;
         this.gameService = gameService;
+        this.adminPlayerService = adminPlayerService;
+        this.configurationService = sessionConfigurationService;
     }
 
     @SubscribeMapping("/dobblePair")
@@ -47,7 +53,7 @@ public class MainController {
      * Send to winner he won and everyone else they lost
      */
     @MessageMapping("/amIWinner")
-    public void amIWinner(Response request) {
+    public void amIWinner(AmIWinnerRequest request) {
         String clientID = request.getClientID();
         int shoutID = request.getShoutID();
 
@@ -64,28 +70,39 @@ public class MainController {
 
         humanPlayers.remove(request.getClientID());
         humanPlayers.values().forEach(humanPlayer -> {
-            Response loss = new Response(humanPlayer.getClientId(), shoutID, ResponseType.LOST);
+            Pair pair = this.gameService.getNextTurnState(humanPlayer.getClientId());
+            AmIWinnerResponse loss = new AmIWinnerResponse(humanPlayer.getClientId(), shoutID, ResponseType.LOST, pair);
             this.communicationService.send(humanPlayer.getClientId(), "/queue/card-updates", loss);
         });
 
-        Response win = new Response(player.getClientId(), shoutID, ResponseType.WIN);
+        Pair pair = this.gameService.getNextTurnState(clientID);
+        AmIWinnerResponse win = new AmIWinnerResponse(player.getClientId(), shoutID, ResponseType.WIN, pair);
         this.communicationService.send(player.getClientId(), "/queue/card-updates", win);
-        // TODO new session establish
     }
 
     @MessageMapping("/init")
-    public void init() {
+    public void init(InitRequest request) {
+        this.configurationService.setComputerPlayersNumber(request.getComputerPlayersNumber());
+        this.configurationService.setComputerDifficulty(request.getComputerDifficulty());
+        this.configurationService.startGameSession();
 
+        Map<String, HumanPlayer> humanPlayers = this.playerService.getHumanPlayers();
+
+        humanPlayers.values().forEach(humanPlayer -> {
+            Pair pair = this.gameService.getNextTurnState(humanPlayer.getClientId());
+            AmIWinnerResponse loss = new AmIWinnerResponse(humanPlayer.getClientId(), 1, ResponseType.NONE, pair);
+            this.communicationService.send(humanPlayer.getClientId(), "/queue/card-updates", loss);
+        });
     }
 
     @MessageMapping("/deletePlayer")
-    public void deletePlayer() {
-
+    public void deletePlayer(DeletePlayerRequest request) {
+        this.adminPlayerService.deletePlayerFromGame(request.getPlayerToDeleteID());
     }
 
     @MessageMapping("/addPlayer")
-    public void addPlayer() {
-
+    public void addPlayer(AddPlayerRequest request) {
+        this.adminPlayerService.addPlayerToGame(request.getPlayerToAddName(), request.getPlayerToAddID());
     }
 
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.Scene?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.image.Image?>
+
+<Scene fx:controller="pl.dobblepolskab.gui.DobbleMenuController" fx:id="scene"
+       xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" width="800" height="600">
+    <Pane>
+        <ImageView fx:id="logo" pickOnBounds="true" preserveRatio="true">
+            <Image url="@../../../images/logo.png"/>
+        </ImageView>
+        <Button fx:id="singleplayer" mnemonicParsing="false" onMouseClicked="#startSingleplayer" text="Singleplayer"/>
+        <Button fx:id="multiplayer" mnemonicParsing="false" text="Multiplayer"/>
+        <Button fx:id="settings" mnemonicParsing="false" text="Settings"/>
+        <Button fx:id="exit" mnemonicParsing="false" text="Exit"/>
+    </Pane>
+</Scene>

@@ -16,5 +16,6 @@
         <Button fx:id="multiplayer" mnemonicParsing="false" text="Multiplayer"/>
         <Button fx:id="settings" mnemonicParsing="false" text="Settings"/>
         <Button fx:id="exit" mnemonicParsing="false" text="Exit"/>
+
     </Pane>
 </Scene>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.scene.Scene?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.Pane?>
+
+<?import javafx.scene.control.Button?>
+<Scene fx:controller="pl.dobblepolskab.gui.DobbleSingleplayerController" fx:id="scene"
+       xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" width="800" height="600">
+    <Pane>
+        <ComboBox fx:id="levelInput" onAction="#difficultyLevelSelected" promptText="Difficulty Level" prefHeight="27">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="Easy" />
+                    <String fx:value="Medium" />
+                    <String fx:value="Hard" />
+                    <String fx:value="Expert" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+        <Button fx:id="goBack" onMouseClicked="#goBackToMenu" text="Go Back"/>
+        <Button fx:id="play" onMouseClicked="#startTheGame" text="Play"/>
+    </Pane>
+</Scene>

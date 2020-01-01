@@ -2,12 +2,15 @@
 
 <?import javafx.scene.*?>
 <?import javafx.scene.layout.Pane?>
-
+<?import javafx.scene.text.Text?>
 <?import pl.dobblepolskab.gui.DobbleCard?>
+
 <Scene fx:controller="pl.dobblepolskab.gui.DobbleGameController" fx:id="scene"
        xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" width="800" height="600">
-    <Pane style="-fx-background-color: lightgreen">
+    <Pane fx:id="pane" style="-fx-background-color: lightgreen">
         <DobbleCard fx:id="leftCard"/>
         <DobbleCard fx:id="rightCard"/>
+        <Text fx:id="scoreDisplay" fill="black" style="-fx-font: 40 arial"/>
+        <Text fx:id="timeDisplay" fill="black" style="-fx-font: 40 arial"/>
     </Pane>
 </Scene>

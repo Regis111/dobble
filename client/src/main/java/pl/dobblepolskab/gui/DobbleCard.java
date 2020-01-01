@@ -11,6 +11,7 @@ import javafx.scene.shape.Circle;
 public class DobbleCard extends Group {
     private static final int IMAGES_COUNT = 8;
 
+    private DobbleImage[] images;
     private ImageView[] imageViews = new ImageView[IMAGES_COUNT];
     private DobbleImage highlightedImage;
 
@@ -20,26 +21,19 @@ public class DobbleCard extends Group {
     public void setImages(DobbleImage[] images) {
         if (images == null || images.length != IMAGES_COUNT)
             throw new IllegalArgumentException("A card should contain " + IMAGES_COUNT + " images");
+        this.images = images;
 
         highlightedImage = null;
         EventHandler<MouseEvent> handler = mouseEvent -> {
             ImageView source = (ImageView) mouseEvent.getSource();
             DobbleImage selectedImage = (DobbleImage) source.getImage();
 
-            mouseEvent.consume();
-
             if (selectedImage != highlightedImage) {
-                if (highlightedImage != null) {
-                    int id = highlightedImage.getId() - 1;
-                    images[id] = highlightedImage.getReversedImage();
-                    imageViews[id].setImage(images[id]);
-                }
+                removeHighlight();
 
                 highlightedImage = selectedImage.getReversedImage();
                 selectedImage = highlightedImage;
                 source.setImage(selectedImage);
-
-                circle.fireEvent(mouseEvent);
             }
         };
 
@@ -51,6 +45,7 @@ public class DobbleCard extends Group {
         layout.layoutImages(imageViews);
         setRotate(360 * Math.random());
 
+
         getChildren().clear();
         getChildren().add(circle);
         getChildren().addAll(imageViews);
@@ -60,8 +55,13 @@ public class DobbleCard extends Group {
         return highlightedImage;
     }
 
-    public Circle getCardBase() {
-        return circle;
+    public void removeHighlight() {
+        if (highlightedImage != null) {
+            int id = highlightedImage.getId() - 1;
+            images[id] = highlightedImage.getReversedImage();
+            imageViews[id].setImage(images[id]);
+            highlightedImage = null;
+        }
     }
 
     public DoubleProperty getRadiusProperty() {

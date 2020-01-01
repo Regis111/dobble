@@ -66,6 +66,6 @@ public class DobbleMenuController {
 
     @FXML
     public void startSingleplayer() {
-        scene.getRoot().fireEvent(new SceneChangeEvent(SceneChangeEvent.SCENE_CHANGE_EVENT_TYPE, "DobbleGame.fxml"));
+        scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "DobbleSingleplayer.fxml"));
     }
 }

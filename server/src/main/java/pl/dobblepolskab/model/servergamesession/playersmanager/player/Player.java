@@ -1,7 +1,7 @@
 package pl.dobblepolskab.model.servergamesession.playersmanager.player;
 
-import pl.dobblepolskab.common.gamecontent.GameCard;
-import pl.dobblepolskab.common.gamecontent.GameContent;
+import gamecontent.GameCard;
+import gamecontent.GameContent;
 import pl.dobblepolskab.model.servergamesession.gamecardsstack.PlayerStack;
 
 public abstract class Player {

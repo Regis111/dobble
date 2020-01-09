@@ -1,9 +1,5 @@
 package pl.dobblepolskab.model.servergamesession.playersmanager.player.aimodules;
 
-import pl.dobblepolskab.common.sockets.AssociationBasedClientSocket;
-import pl.dobblepolskab.common.sockets.AssociationBasedServerSocket;
-import pl.dobblepolskab.common.sockets.ClientSocket;
-import pl.dobblepolskab.common.sockets.ServerSocket;
 import pl.dobblepolskab.model.server.Server;
 
 public abstract class AIModule {

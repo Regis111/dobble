@@ -4,9 +4,10 @@ import pl.dobblepolskab.model.servergamesession.playersmanager.player.HumanPlaye
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.Player;
 
 import java.util.Map;
+import java.util.Optional;
 
 public interface PlayerService {
     Map<String, HumanPlayer> getHumanPlayers();
 
-    Player getPlayer(String clientID);
+    Optional<Player> getPlayer(String clientID);
 }

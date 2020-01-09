@@ -13,6 +13,7 @@ import pl.dobblepolskab.model.servergamesession.playersmanager.player.Player;
 import pl.dobblepolskab.services.*;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Random;
 
 @Controller
@@ -57,7 +58,7 @@ public class MainController {
         String clientID = request.getClientID();
         int shoutID = request.getShoutID();
 
-        Player player = this.playerService.getPlayer(clientID);
+        Optional<Player> player = this.playerService.getPlayer(clientID);
 
         if (!this.gameService.isWinner(clientID, shoutID)) {
             System.out.format("Client: %s didn't win shout %s", clientID, shoutID);
@@ -76,8 +77,10 @@ public class MainController {
         });
 
         Pair pair = this.gameService.getNextTurnState(clientID);
-        AmIWinnerResponse win = new AmIWinnerResponse(player.getClientId(), shoutID, ResponseType.WIN, pair);
-        this.communicationService.send(player.getClientId(), "/queue/card-updates", win);
+        if(player.isPresent()) {
+            AmIWinnerResponse win = new AmIWinnerResponse(player.get().getClientId(), shoutID, ResponseType.WIN, pair);
+            this.communicationService.send(player.get().getClientId(), "/queue/card-updates", win);
+        }
     }
 
     @MessageMapping("/init")

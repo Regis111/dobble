@@ -1,7 +1,7 @@
 package pl.dobblepolskab.model.servergamesession.gamecardsstack;
 
-import pl.dobblepolskab.common.gamecontent.GameCard;
-import pl.dobblepolskab.common.gamecontent.GameContent;
+import gamecontent.GameCard;
+import gamecontent.GameContent;
 
 public class PlayerStack extends GameCardsStack {
     private boolean initiated;

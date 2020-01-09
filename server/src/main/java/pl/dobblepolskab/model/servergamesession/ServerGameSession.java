@@ -1,26 +1,28 @@
 package pl.dobblepolskab.model.servergamesession;
 
-import pl.dobblepolskab.common.gamecontent.GameCard;
-import pl.dobblepolskab.common.gamecontent.GameContent;
-import pl.dobblepolskab.common.sockets.ServerSocket;
+import gamecontent.GameCard;
+import gamecontent.GameContent;
+import messages.Pair;
 import pl.dobblepolskab.model.servergamesession.gamecardsstack.GameMainStack;
 import pl.dobblepolskab.model.servergamesession.playersmanager.PlayersManager;
+import pl.dobblepolskab.model.servergamesession.playersmanager.player.Player;
+import pl.dobblepolskab.services.AdminPlayerService;
+import pl.dobblepolskab.services.GameService;
+import pl.dobblepolskab.services.SessionConfigurationService;
 
 import java.util.Collections;
 import java.util.LinkedList;
 
-public class ServerGameSession {
+public class ServerGameSession implements GameService, SessionConfigurationService {
     private GameContent gameContent;
     private GameMainStack mainStack;
     private PlayersManager playersManager;
-    private ServerSocket serverSocket;
     private boolean sessionRunning;
     private int shoutId;
     private boolean isCardTaken;
 
-    public ServerGameSession(GameContent gameContent, ServerSocket serverSocket){
+    public ServerGameSession(GameContent gameContent){
         this.gameContent = gameContent;
-        this.serverSocket = serverSocket;
         mainStack = new GameMainStack(gameContent);
         playersManager = new PlayersManager(gameContent);
         sessionRunning = false;
@@ -28,28 +30,28 @@ public class ServerGameSession {
         isCardTaken = false;
     }
 
-    public boolean startGameSession(){
+    @Override
+    public void startGameSession(){
         if(sessionRunning)
-            return false;
+            return;
         LinkedList<GameCard> cardsToGiveOut = new LinkedList<>(gameContent.getCards());
         Collections.shuffle(cardsToGiveOut);
         playersManager.preparePlayersToGame(cardsToGiveOut);
         mainStack.initMainStack(cardsToGiveOut);
         shoutId = 1;
         sessionRunning = true;
-        return true;
     }
 
-    public boolean endGameSession(){
+    public void endGameSession(){
         if(!sessionRunning || mainStack.getCardsCount() > 0)
-            return false;
+            return;
         sessionRunning = false;
-        return true;
     }
 
-    public int[] getNextTopCardsForPlayer(String playerClientId){
-        return new int[] {gameContent.getCardIdInModel(mainStack.getTopCard()),
-                gameContent.getCardIdInModel(playersManager.getTopCardOfPlayer(playerClientId))};
+    @Override
+    public Pair getNextTurnState(String playerClientId){
+        return new Pair(gameContent.getCardIdInModel(mainStack.getTopCard()),
+                gameContent.getCardIdInModel(playersManager.getTopCardOfPlayer(playerClientId)));
     }
 
     public boolean startNextShout(){
@@ -64,6 +66,7 @@ public class ServerGameSession {
         return shoutId;
     }
 
+    @Override
     public boolean isWinner(String playerClientId, int requestShoutId){
         if(requestShoutId != shoutId || isCardTaken)
             return false;
@@ -72,5 +75,13 @@ public class ServerGameSession {
         return true;
     }
 
+    @Override
+    public void setComputerPlayersNumber(int playersNumber) {
+        playersManager.setComputerPlayersNumber(playersNumber);
+    }
 
+    @Override
+    public void setComputerDifficulty(int computerDifficulty) {
+        playersManager.setComputerIntelligenceLevel(computerDifficulty);
+    }
 }

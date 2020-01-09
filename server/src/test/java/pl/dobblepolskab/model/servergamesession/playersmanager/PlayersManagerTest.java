@@ -3,7 +3,7 @@ package pl.dobblepolskab.model.servergamesession.playersmanager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import pl.dobblepolskab.common.gamecontent.GameContent;
+import gamecontent.GameContent;
 
 public class PlayersManagerTest {
     private GameContent gameContent;

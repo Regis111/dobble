@@ -6,6 +6,4 @@ public interface GameService {
     boolean isWinner(String clientID, int shoutID);
 
     Pair getNextTurnState(String clientID);
-
-    void startNextGameSession();
 }

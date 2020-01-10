@@ -17,11 +17,11 @@
             </VBox.margin>
         </ImageView>
         <VBox alignment="CENTER" spacing="10">
-            <Button fx:id="singleplayer" mnemonicParsing="false" onMouseClicked="#startSingleplayer" text="Singleplayer" />
-            <Button fx:id="multiplayer" mnemonicParsing="false" text="Multiplayer" />
-            <Button fx:id="leaderboards" mnemonicParsing="false" text="Leaderboards" />
-            <Button fx:id="settings" mnemonicParsing="false" text="Settings" />
-            <Button fx:id="exit" mnemonicParsing="false" text="Exit" />
+            <Button fx:id="singleplayer" mnemonicParsing="false" onMouseClicked="#startSingleplayer" text="Singleplayer"/>
+            <Button fx:id="multiplayer" mnemonicParsing="false" text="Multiplayer"/>
+            <Button fx:id="leaderboards" mnemonicParsing="false" onMouseClicked="#showLeaderboards" text="Leaderboards"/>
+            <Button fx:id="settings" mnemonicParsing="false" text="Settings"/>
+            <Button fx:id="exit" mnemonicParsing="false" text="Exit"/>
         </VBox>
     </VBox>
 </Scene>

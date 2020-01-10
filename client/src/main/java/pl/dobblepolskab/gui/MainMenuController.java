@@ -45,4 +45,9 @@ public class MainMenuController {
     public void startSingleplayer() {
         scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "SingleplayerSettings.fxml"));
     }
+
+    @FXML
+    public void showLeaderboards() {
+        scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "Leaderboards.fxml"));
+    }
 }

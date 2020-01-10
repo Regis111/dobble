@@ -50,9 +50,9 @@ public class SaveResultController {
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             Date currentDate = new Date();
             writer.append(dateFormat.format(currentDate))
-                  .append(" | User Name: ").append(nameField.getText())
-                  .append(" | Difficulty: ").append(level.toString())
-                  .append(" | Score: ").append(String.valueOf(score));
+                  .append(";").append(nameField.getText())
+                  .append(";").append(level.toString())
+                  .append(";").append(String.valueOf(score));
             writer.newLine();
             writer.close();
         } catch (IOException e) {

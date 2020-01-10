@@ -2,9 +2,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import pl.dobblepolskab.gui.DobbleGameController;
-import pl.dobblepolskab.gui.SceneChangedEvent;
-import pl.dobblepolskab.gui.SingleplayerStartedEvent;
+import pl.dobblepolskab.gui.*;
 
 import java.io.IOException;
 
@@ -70,6 +68,12 @@ public class Main extends Application {
             setSceneChangeHandlerCommon(singleplayerStartedEvent);
             DobbleGameController controller = loader.getController();
             controller.setDifficultyLevel(singleplayerStartedEvent.getDifficultyLevel());
+        });
+        currentScene.getRoot().addEventHandler(SingleplayerEndedEvent.SINGLEPLAYER_ENDED_EVENT_TYPE, singleplayerEndedEvent -> {
+            setSceneChangeHandlerCommon(singleplayerEndedEvent);
+            DobbleSaveResultController controller = loader.getController();
+            controller.setDifficultyLevel(singleplayerEndedEvent.getDifficultyLevel());
+            controller.setScore(singleplayerEndedEvent.getScore());
         });
 
         settingHandlerNeeded = true;

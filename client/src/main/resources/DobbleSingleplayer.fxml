@@ -5,8 +5,8 @@
 <?import javafx.scene.Scene?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.Pane?>
-
 <?import javafx.scene.control.Button?>
+
 <Scene fx:controller="pl.dobblepolskab.gui.DobbleSingleplayerController" fx:id="scene"
        xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" width="800" height="600">
     <Pane>

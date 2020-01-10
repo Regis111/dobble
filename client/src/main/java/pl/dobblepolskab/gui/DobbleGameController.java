@@ -14,7 +14,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 
-import java.beans.EventHandler;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,6 +24,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class DobbleGameController {
     private static final double GAP = 10.0;
+    private static final int COUNTDOWN_END = -3600000;
 
     @FXML
     private Scene scene;
@@ -39,12 +39,11 @@ public class DobbleGameController {
     @FXML
     private Text timeDisplay;
 
-    private IntegerProperty score = new SimpleIntegerProperty(0);
-
     private final DateFormat timeFormat = new SimpleDateFormat("mm:ss" );
 
-    private long duration = 5000;
     private DifficultyLevel level;
+    private IntegerProperty score = new SimpleIntegerProperty(0);
+    private long duration = 8000;
 
     @FXML
     public void initialize() {
@@ -71,11 +70,11 @@ public class DobbleGameController {
         KeyFrame frame = new KeyFrame(Duration.seconds(1), event -> {
             try {
                 Date time = timeFormat.parse(timeDisplay.getText());
-                if (time.getTime() == -3600000) {
+                if (time.getTime() == COUNTDOWN_END) {
                     timeline.stop();
                     backToMenu();
                 }
-                time.setTime(time.getTime() - 1000);
+                time.setTime(time.getTime() - 1000); // 1000ms = 1s
                 timeDisplay.setText(timeFormat.format(time));
             } catch (ParseException e) {
                 e.printStackTrace();
@@ -142,9 +141,24 @@ public class DobbleGameController {
 
     public void setDifficultyLevel(DifficultyLevel level) {
         this.level = level;
+        switch (level) {
+            case Easy:
+                duration = 8000;
+                break;
+            case Medium:
+                duration = 5000;
+                break;
+            case Hard:
+                duration = 3000;
+                break;
+            case Expert:
+                duration = 2000;
+                break;
+        }
+        timeDisplay.setText(timeFormat.format(duration));
     }
 
     private void backToMenu() {
-        scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "DobbleMenu.fxml"));
+        scene.getRoot().fireEvent(new SingleplayerEndedEvent(SingleplayerEndedEvent.SINGLEPLAYER_ENDED_EVENT_TYPE, "DobbleSaveResult.fxml", level, score.get()));
     }
 }

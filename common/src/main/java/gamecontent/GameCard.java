@@ -56,6 +56,10 @@ public class GameCard {
         }
     }
 
+    public int[] getValues() {
+        return values;
+    }
+
     public long getCardId() {
         return cardId;
     }

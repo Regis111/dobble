@@ -50,7 +50,7 @@ public class GameContent {
         Optional<GameCardSymbol> gameCardSymbolOptional;
         do {
             gameCardSymbolOptional = gameContentSource.getNextGameCardSymbol();
-            if(!gameCardSymbolOptional.isPresent())
+            if (!gameCardSymbolOptional.isPresent())
                 break;
             addGameCardSymbol(gameCardSymbolOptional.get());
         }
@@ -58,7 +58,7 @@ public class GameContent {
         Optional<GameCard> gameCardOptional;
         do {
             gameCardOptional = gameContentSource.getNextGameCard();
-            if(!gameCardOptional.isPresent())
+            if (!gameCardOptional.isPresent())
                 break;
             addGameCard(gameCardOptional.get());
         }
@@ -66,18 +66,32 @@ public class GameContent {
         return completed;
     }
 
-    public boolean containsCard(GameCard gameCard){
+    public boolean containsCard(GameCard gameCard) {
         ArrayList<GameCard> list = new ArrayList<>();
         return gameCards.contains(gameCard);
 
     }
 
-    public int getCardIdInModel(GameCard gameCard){
+    public int getCardIdInModel(GameCard gameCard) {
         return gameCards.indexOf(gameCard);
     }
 
-    public List<GameCard> getCards(){
+    public List<GameCard> getCards() {
         return ((!completed) ? (Collections.emptyList()) : new ArrayList<>(gameCards));
     }
 
+    public String[] getGameCardSymbolPaths(int gameContentCardId) {
+        String[] pathsArray = new String[GameCard.finalSymbolsNumber];
+        if (gameContentCardId < 1 || gameContentCardId > finalGameCardsNumber || !completed) {
+            for (int i = 0; i < GameCard.finalSymbolsNumber; i++) {
+                pathsArray[i] = "";
+            }
+        } else {
+            int[] cardSymbols = gameCards.get(gameContentCardId-1).getValues();
+            for (int i = 0; i < GameCard.finalSymbolsNumber; i++) {
+                pathsArray[i] = gameCardSymbols.get(cardSymbols[i]-1).getImagePath();
+            }
+        }
+        return pathsArray;
+    }
 }

@@ -86,15 +86,9 @@ public class GameContentBox implements GameContentSource {
     public Optional<GameCardSymbol> getNextGameCardSymbol() {
         if (gameContentCorupted)
             return Optional.empty();
-        File imageFile = new File(directoryPath + File.separator + imagesPaths[nextSymbolId]);
-        try {
-            BufferedImage image = ImageIO.read(imageFile);
-            nextSymbolId++;
-            return Optional.of(new GameCardSymbol(image));
-        } catch (IOException e) {
-            gameContentCorupted = true;
-            return Optional.empty();
-        }
+        String path = directoryPath + File.separator + imagesPaths[nextSymbolId];
+        nextSymbolId++;
+        return Optional.of(new GameCardSymbol(path));
     }
 
     @Override

@@ -2,6 +2,9 @@ package pl.dobblepolskab.model.servergamesession.playersmanager;
 
 import gamecontent.GameCard;
 import gamecontent.GameContent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.ComputerPlayer;
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.HumanPlayer;
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.Player;
@@ -11,6 +14,8 @@ import pl.dobblepolskab.services.PlayerService;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Component
+@Scope(value = "singleton")
 public class PlayersManager implements PlayerService, AdminPlayerService {
     private HashMap<String, Player> playersList;
     private int computerPlayersNum;
@@ -18,6 +23,7 @@ public class PlayersManager implements PlayerService, AdminPlayerService {
     private int computerIntelligenceLevel;
     public static final int maxPlayersNumber = 8;
 
+    @Autowired
     public PlayersManager(GameContent gameContent){
         initObject();
         this.gameContent = gameContent;

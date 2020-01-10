@@ -3,6 +3,9 @@ package pl.dobblepolskab.model.servergamesession;
 import gamecontent.GameCard;
 import gamecontent.GameContent;
 import messages.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import pl.dobblepolskab.model.servergamesession.gamecardsstack.GameMainStack;
 import pl.dobblepolskab.model.servergamesession.playersmanager.PlayersManager;
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.Player;
@@ -13,6 +16,8 @@ import pl.dobblepolskab.services.SessionConfigurationService;
 import java.util.Collections;
 import java.util.LinkedList;
 
+@Component
+@Scope(value = "singleton")
 public class ServerGameSession implements GameService, SessionConfigurationService {
     private GameContent gameContent;
     private GameMainStack mainStack;
@@ -21,10 +26,12 @@ public class ServerGameSession implements GameService, SessionConfigurationServi
     private int shoutId;
     private boolean isCardTaken;
 
-    public ServerGameSession(GameContent gameContent){
+    @Autowired
+    public ServerGameSession(GameContent gameContent, GameMainStack gameMainStack,
+                             PlayersManager playersManager){
         this.gameContent = gameContent;
-        mainStack = new GameMainStack(gameContent);
-        playersManager = new PlayersManager(gameContent);
+        mainStack = gameMainStack;
+        this.playersManager = playersManager;
         sessionRunning = false;
         shoutId = 0;
         isCardTaken = false;

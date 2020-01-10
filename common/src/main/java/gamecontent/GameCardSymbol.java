@@ -1,33 +1,33 @@
 package gamecontent;
 
-import java.awt.image.BufferedImage;
-
 public class GameCardSymbol {
     private int symbolId;
-    private BufferedImage image;
+    private String imagePath;
 
     public GameCardSymbol(){
         initObject();
     }
 
-    public GameCardSymbol(BufferedImage symbolImage){
+    public GameCardSymbol(String imagePath){
         initObject();
-        setImage(symbolImage);
+        setImagePath(imagePath);
     }
 
     private void initObject(){
         symbolId = 0;
-        image = null;
+        imagePath = "";
     }
 
-    public void setImage(BufferedImage symbolImage){
-        image = symbolImage.getSubimage(0, 0, symbolImage.getWidth(), symbolImage.getHeight());
-        symbolId = symbolImage.getData().hashCode();
+    public void setImagePath(String imagePath){
+        this.imagePath = imagePath;
+        symbolId = imagePath.hashCode();
     }
 
     public int getSymbolId(){
         return symbolId;
     }
 
-
+    public String getImagePath() {
+        return imagePath;
+    }
 }

@@ -13,6 +13,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import pl.dobblepolskab.gui.events.SingleplayerEndedEvent;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -22,7 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-public class DobbleGameController {
+public class GameTableController {
     private static final double GAP = 10.0;
     private static final int COUNTDOWN_END = -3600000;
 
@@ -159,6 +160,6 @@ public class DobbleGameController {
     }
 
     private void backToMenu() {
-        scene.getRoot().fireEvent(new SingleplayerEndedEvent(SingleplayerEndedEvent.SINGLEPLAYER_ENDED_EVENT_TYPE, "DobbleSaveResult.fxml", level, score.get()));
+        scene.getRoot().fireEvent(new SingleplayerEndedEvent(SingleplayerEndedEvent.SINGLEPLAYER_ENDED_EVENT_TYPE, "SaveResult.fxml", level, score.get()));
     }
 }

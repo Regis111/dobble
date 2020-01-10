@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import pl.dobblepolskab.gui.events.SceneChangedEvent;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -16,7 +17,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class DobbleSaveResultController {
+public class SaveResultController {
 
     @FXML
     private Scene scene;
@@ -58,7 +59,7 @@ public class DobbleSaveResultController {
             e.printStackTrace();
         }
 
-        scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "DobbleMenu.fxml"));
+        scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "MainMenu.fxml"));
     }
 
     public void setDifficultyLevel(DifficultyLevel level) {

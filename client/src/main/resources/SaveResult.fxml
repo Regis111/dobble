@@ -8,9 +8,9 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Button?>
 
-<Scene fx:controller="pl.dobblepolskab.gui.DobbleSaveResultController" fx:id="scene"
-       xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" height="800.0" width="600.0">
-    <VBox spacing="10" alignment="CENTER" prefHeight="800" prefWidth="600">
+<Scene fx:controller="pl.dobblepolskab.gui.SaveResultController" fx:id="scene"
+       xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" width="800.0" height="600.0">
+    <VBox spacing="10" alignment="CENTER" prefWidth="800" prefHeight="600">
         <Text fx:id="scoreDisplay" fill="black" style="-fx-font: 40 arial"/>
         <HBox spacing="10" alignment="CENTER">
             <Label text="User Name:"/>

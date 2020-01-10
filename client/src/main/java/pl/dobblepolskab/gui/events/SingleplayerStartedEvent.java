@@ -1,7 +1,8 @@
-package pl.dobblepolskab.gui;
+package pl.dobblepolskab.gui.events;
 
 import javafx.event.Event;
 import javafx.event.EventType;
+import pl.dobblepolskab.gui.DifficultyLevel;
 
 public class SingleplayerStartedEvent extends SceneChangedEvent {
     public static final EventType<SingleplayerStartedEvent> SINGLEPLAYER_STARTED_EVENT_TYPE = new EventType<>("SingleplayerStartedEvent");

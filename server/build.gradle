@@ -9,6 +9,7 @@ repositories {
 }
 
 dependencies {
+    implementation project(':common')
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     testCompile 'org.springframework.boot:spring-boot-starter-test'

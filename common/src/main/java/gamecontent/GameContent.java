@@ -16,7 +16,7 @@ public class GameContent {
     public static GameContent getInstance(){
         if(instance == null) {
             instance = new GameContent();
-            GameContentBox contentBox = new GameContentBox("server/build/resources/main/dobbleDefaultContentBox");
+            GameContentBox contentBox = new GameContentBox("build/resources/main/dobbleDefaultContentBox");
             if(!instance.importGameContent(contentBox))
                 throw new RuntimeException("Cannot import game content from default game content box!");
         }

@@ -24,9 +24,9 @@ public class PlayersManager implements PlayerService, AdminPlayerService {
     public static final int maxPlayersNumber = 8;
 
     @Autowired
-    public PlayersManager(GameContent gameContent){
+    public PlayersManager(){
         initObject();
-        this.gameContent = gameContent;
+        this.gameContent = GameContent.getInstance();
     }
 
     private void initObject(){
@@ -43,7 +43,7 @@ public class PlayersManager implements PlayerService, AdminPlayerService {
     public boolean addHumanPlayer(String name, String clientId){
         if(playersList.size() == maxPlayersNumber || checkIfPlayerExists(clientId))
             return false;
-        HumanPlayer newHumanPlayer = new HumanPlayer(gameContent, name, clientId);
+        HumanPlayer newHumanPlayer = new HumanPlayer(name, clientId);
         playersList.put(clientId, newHumanPlayer);
         return true;
     }
@@ -52,7 +52,7 @@ public class PlayersManager implements PlayerService, AdminPlayerService {
         if(playersList.size() == maxPlayersNumber)
             return false;
         String name = "Computer " + (computerPlayersNum+1);
-        ComputerPlayer newComputerPlayer = new ComputerPlayer(gameContent, name, name, computerIntelligenceLevel);
+        ComputerPlayer newComputerPlayer = new ComputerPlayer(name, name, computerIntelligenceLevel);
         playersList.put(name, newComputerPlayer);
         computerPlayersNum++;
         return true;

@@ -11,7 +11,7 @@ public class GameContentTest {
         GameCard gameCard1 = new GameCard(defArray);
         defArray[5] = 9;
         GameCard gameCard2 = new GameCard(defArray);
-        GameContent gameContent = new GameContent();
+        GameContent gameContent = GameContent.getInstance();
         String errorString = "Chacking if the same card (THE SAME SEQUENCE ONLY) already exists in the game content doesn't work!";
 
         // when
@@ -29,7 +29,7 @@ public class GameContentTest {
     public void importGameContentTest(){
         // given
         GameContentBox gameContentBox = new GameContentBox("build/resources/test/testGameContentBox");
-        GameContent gameContent = new GameContent();
+        GameContent gameContent = GameContent.getInstance();
         String errorString = "Chacking if the same graphics already exists in the game content doesn't work!";
 
         // when

@@ -6,13 +6,24 @@ import java.util.List;
 import java.util.Optional;
 
 public class GameContent {
+    static GameContent instance = null;
     private boolean completed;
     private ArrayList<GameCard> gameCards;
     private ArrayList<GameCardSymbol> gameCardSymbols;
-    public static final int finalGameCardSymbolsNumber = 50;
-    public static final int finalGameCardsNumber = 55;
+    public static final int finalGameCardSymbolsNumber = 57;
+    public static final int finalGameCardsNumber = 57;
 
-    public GameContent() {
+    public static GameContent getInstance(){
+        if(instance == null) {
+            instance = new GameContent();
+            GameContentBox contentBox = new GameContentBox("server/build/resources/main/dobbleDefaultContentBox");
+            if(!instance.importGameContent(contentBox))
+                throw new RuntimeException("Cannot import game content from default game content box!");
+        }
+        return instance;
+    }
+
+    private GameContent() {
         initObject();
     }
 

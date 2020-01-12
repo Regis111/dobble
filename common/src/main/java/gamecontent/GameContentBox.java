@@ -84,7 +84,7 @@ public class GameContentBox implements GameContentSource {
 
     @Override
     public Optional<GameCardSymbol> getNextGameCardSymbol() {
-        if (gameContentCorupted)
+        if (gameContentCorupted || nextSymbolId == GameContent.finalGameCardSymbolsNumber)
             return Optional.empty();
         String path = directoryPath + File.separator + imagesPaths[nextSymbolId];
         nextSymbolId++;
@@ -93,7 +93,7 @@ public class GameContentBox implements GameContentSource {
 
     @Override
     public Optional<GameCard> getNextGameCard() {
-        if (gameContentCorupted)
+        if (gameContentCorupted || nextCardId == GameContent.finalGameCardsNumber)
             return Optional.empty();
         int [] cardValues = Arrays.copyOfRange(cardsDefs, nextCardId* GameCard.finalSymbolsNumber,
                 (nextCardId+1)*GameCard.finalSymbolsNumber);

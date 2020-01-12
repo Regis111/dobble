@@ -27,9 +27,9 @@ public class ServerGameSession implements GameService, SessionConfigurationServi
     private boolean isCardTaken;
 
     @Autowired
-    public ServerGameSession(GameContent gameContent, GameMainStack gameMainStack,
+    public ServerGameSession(GameMainStack gameMainStack,
                              PlayersManager playersManager){
-        this.gameContent = gameContent;
+        this.gameContent = GameContent.getInstance();
         mainStack = gameMainStack;
         this.playersManager = playersManager;
         sessionRunning = false;

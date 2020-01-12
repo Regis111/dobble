@@ -7,15 +7,13 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import pl.dobblepolskab.model.servergamesession.gamecardsstack.PlayerStack;
 
-@Component
-@Scope(value = "prototype")
 public abstract class Player {
     private String name;
     private String clientId;
     @Autowired
     private PlayerStack cardsStack;
 
-    public Player(GameContent gameContent, String name, String clientId){
+    public Player(String name, String clientId){
         this.name = name;
         this.clientId = clientId;
     }

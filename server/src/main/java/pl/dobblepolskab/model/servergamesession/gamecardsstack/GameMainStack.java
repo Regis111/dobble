@@ -15,8 +15,8 @@ public class GameMainStack extends GameCardsStack {
     private boolean initiated;
 
     @Autowired
-    public GameMainStack(GameContent gameContent) {
-        super(gameContent);
+    public GameMainStack() {
+        super(GameContent.getInstance());
         initObject();
     }
 

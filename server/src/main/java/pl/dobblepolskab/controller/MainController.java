@@ -7,26 +7,18 @@ import messages.requests.*;
 import messages.responses.AmIWinnerResponse;
 import messages.responses.InitResponse;
 import messages.responses.ResponseType;
-import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.annotation.SendToUser;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Controller;
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.HumanPlayer;
 import pl.dobblepolskab.model.servergamesession.playersmanager.player.Player;
 import pl.dobblepolskab.services.*;
 
-import java.security.Principal;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Random;
 
 @Controller
 public class MainController {
@@ -56,14 +48,6 @@ public class MainController {
         this.configurationService = sessionConfigurationService;
     }
 
-    @SubscribeMapping("/dobblePair")
-    public String helloFromDobble() {
-        String[] winOrLose = {"WIN", "LOSE"};
-        logger.info("Hello From DobbleServer");
-        Random r = new Random();
-        int ind = r.nextInt(winOrLose.length);
-        return "Hello from Dobble! You " + winOrLose[ind];
-    }
     /*
      * Send to winner he won and everyone else they lost
      */
@@ -172,7 +156,8 @@ public class MainController {
         }
 
         this.adminPlayerService.addPlayerToGame(request.getPlayerToAddName(), request.getClientID());
-        logger.info("Adding human player, name = {}, clientID = {} ", request.getPlayerToAddName(), request.getClientID());
+        logger.info("Adding human player, name = {}, clientID = {} ",
+                request.getPlayerToAddName(), request.getClientID());
     }
 
     @MessageMapping("/endSession")
@@ -180,5 +165,4 @@ public class MainController {
         this.configurationService.endGameSession();
         logger.info("Ending game session");
     }
-
 }

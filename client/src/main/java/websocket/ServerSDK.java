@@ -15,6 +15,7 @@ import org.springframework.messaging.simp.stomp.*;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
+import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -26,11 +27,12 @@ public class ServerSDK {
     private CustomStompSessionHandler stompSessionHandler;
 
     // The Parent object is by this class to issue messages to the GUI as a response to the messages from the server.
-    public ServerSDK(Parent gameObject) throws ExecutionException, InterruptedException {
+    public ServerSDK(Parent gameObject, String playerName) throws ExecutionException, InterruptedException {
         WebSocketStompClient webSocketStompClient = new WebSocketStompClient(new StandardWebSocketClient());
         webSocketStompClient.setMessageConverter(new StringMessageConverter());
         this.stompSessionHandler = new CustomStompSessionHandler(UUID.randomUUID().toString(), gameObject);
         this.session = webSocketStompClient.connect(URL, stompSessionHandler).get();
+        this.addPlayer(stompSessionHandler.getClientID(), playerName);
     }
 
     public StompSession getSession() {
@@ -84,18 +86,19 @@ public class ServerSDK {
             e.printStackTrace();
         }
     }
-}
-
 /*
     public static void main(String[] args) {
         try {
-            ServerSDK sdk = new ServerSDK();
-            Thread.sleep(1000);
-            sdk.askIfWonShout(sdk.stompSessionHandler.getClientID(), 1);
+            ServerSDK sdk = new ServerSDK(new P(), "Ja");
+            Thread.sleep(3000);
+            sdk.addPlayer(sdk.stompSessionHandler.getClientID(), "Ja");
+            Thread.sleep(3000);
+            sdk.initSessionAsAdmin(sdk.stompSessionHandler.getClientID(), DifficultyLevel.Easy, 2);
+            //Thread.sleep(2000);
+            //sdk.askIfWonShout(sdk.stompSessionHandler.getClientID(), 1);
             new Scanner(System.in).nextLine();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-    }
+    }*/
 }
-*/

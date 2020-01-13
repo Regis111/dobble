@@ -4,6 +4,8 @@ public class InitResponse extends Response {
     private int firstCard;
     private int secondCard;
 
+    public InitResponse(){}
+
     public InitResponse(String clientID, int shoutID, int firstCard, int secondCard) {
         super(clientID, shoutID);
         this.firstCard = firstCard;

@@ -153,7 +153,7 @@ public class GameTableController {
 
         server = new ServerSDK(scene.getRoot());
         this.clientId = server.getStompSessionHandler().getClientID();
-        server.addPlayer(server.getStompSessionHandler().getClientID(), "player" + clientId);
+        server.initSessionAsAdmin(clientId, level, 2);
 
         // Wait for initialization
         latch.await();

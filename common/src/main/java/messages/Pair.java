@@ -4,6 +4,8 @@ public class Pair {
     private Integer first;
     private Integer second;
 
+    public Pair() {}
+
     public Pair(Integer first, Integer second) {
         this.first = first;
         this.second = second;

@@ -9,3 +9,5 @@ common/.gradle
 client/build
 server/build
 common/build
+
+client/RESULTS.TXT

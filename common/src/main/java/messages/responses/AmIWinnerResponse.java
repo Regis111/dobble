@@ -1,32 +1,34 @@
 package messages.responses;
 
-import messages.Pair;
-import messages.requests.Request;
+public class AmIWinnerResponse extends Response {
 
-public class AmIWinnerResponse extends Request {
-
-    private int shoutID;
+    private int card;
 
     private ResponseType responseType;
 
-    private Pair pair;
+    public AmIWinnerResponse() {}
 
-    public Pair getPair() {
-        return pair;
-    }
-
-    public AmIWinnerResponse(String clientID, int shoutID, ResponseType responseType, Pair pair) {
-        super(clientID);
+    public AmIWinnerResponse(String clientID, int shoutID, ResponseType responseType, int card) {
+        super(clientID, shoutID);
         this.responseType = responseType;
-        this.shoutID = shoutID;
-        this.pair = pair;
-    }
-
-    public int getShoutID() {
-        return shoutID;
+        this.card = card;
     }
 
     public ResponseType getResponseType() {
         return responseType;
+    }
+
+    public int getCard() {
+        return card;
+    }
+
+    @Override
+    public String toString() {
+        return "AmIWinnerResponse{" +
+                "card=" + card +
+                ", responseType=" + responseType +
+                ", shoutID=" + shoutID +
+                ", clientID='" + clientID + '\'' +
+                '}';
     }
 }

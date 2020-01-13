@@ -1,7 +1,9 @@
 package pl.dobblepolskab.services;
 
 import messages.responses.AmIWinnerResponse;
+import messages.responses.Response;
 
 public interface CommunicationService {
-    void send(String clientID, String path, AmIWinnerResponse response);
+    //void sendToUser(String clientID, Response response);
+    void sendOnTopic(String topic, Response response);
 }

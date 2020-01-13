@@ -3,13 +3,11 @@ package messages.responses;
 import messages.Message;
 
 public abstract class Response extends Message {
-    private int shoutID;
+    protected int shoutID;
 
-    public Response() {
+    public Response() {}
 
-    }
-
-    public Response(String clientID, ResponseType type, int shoutID) {
+    public Response(String clientID, int shoutID) {
         super(clientID);
         this.shoutID = shoutID;
     }

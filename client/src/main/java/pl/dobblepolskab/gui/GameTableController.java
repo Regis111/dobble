@@ -14,7 +14,11 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import messages.responses.AmIWinnerResponse;
+import messages.responses.InitResponse;
+import pl.dobblepolskab.gui.events.ServerRespondedEvent;
 import pl.dobblepolskab.gui.events.SingleplayerEndedEvent;
+import websocket.ServerSDK;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -22,11 +26,17 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class GameTableController {
     private static final double GAP = 10.0;
     private static final int COUNTDOWN_END = -3600000;
+    private static final DateFormat TIME_FORMAT = new SimpleDateFormat("mm:ss" );
 
     @FXML
     private Scene scene;
@@ -41,14 +51,50 @@ public class GameTableController {
     @FXML
     private Text timeDisplay;
 
-    private final DateFormat timeFormat = new SimpleDateFormat("mm:ss" );
-
+    // This fields are used in both singleplayer & multiplayer modes.
+    private final GameType type;
+    private IntegerProperty score;
     private DifficultyLevel level;
-    private IntegerProperty score = new SimpleIntegerProperty(0);
-    private long duration = 8000;
+    private int turnId;
+
+    // This field is used only in the singleplayer mode.
+    private long duration;
+
+    // This fields are used only in the multiplayer mode.
+    private ServerSDK server;
+    private String clientId;
+
+    public GameTableController(GameType type, DifficultyLevel level) {
+        this.type = type;
+        this.level = level;
+        this.score = new SimpleIntegerProperty(0);
+        this.turnId = 0;
+
+        switch (level) {
+            case Easy:
+                duration = 8000;
+                break;
+            case Medium:
+                duration = 5000;
+                break;
+            case Hard:
+                duration = 3000;
+                break;
+            case Expert:
+                duration = 2000;
+                break;
+        }
+    }
 
     @FXML
-    public void initialize() {
+    public void initialize() throws ExecutionException, InterruptedException {
+        /*
+         * The connection with the server has to be established here as the scene object is not yet initialized while
+         * in the constructor.
+         */
+        if (type == GameType.MULTIPLAYER)
+            initializeServerConnection();
+
         layoutItems();
 
         scene.getRoot().addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
@@ -58,10 +104,13 @@ public class GameTableController {
             if (leftCardImage != null && rightCardImage != null) {
                 String leftCardImagePath = leftCardImage.getPath();
                 String rightCardImagePath = rightCardImage.getPath();
-                if (leftCardImagePath.equals(rightCardImagePath)) {
+                final boolean isCorrectPair = leftCardImagePath.equals(rightCardImagePath);
+                if (isCorrectPair && type == GameType.SINGLEPLAYER) {
                     score.set(score.get() + 1);
-                    //scene.getRoot().fireEvent(new PairFoundEvent(PairFoundEvent.PAIR_FOUND_EVENT_TYPE));
                     refresh();
+                } else if (isCorrectPair && type == GameType.MULTIPLAYER) {
+                    server.askIfWonShout(clientId, turnId);
+                    turnId++;
                 }
             }
         });
@@ -71,13 +120,13 @@ public class GameTableController {
         Timeline timeline = new Timeline();
         KeyFrame frame = new KeyFrame(Duration.seconds(1), event -> {
             try {
-                Date time = timeFormat.parse(timeDisplay.getText());
+                Date time = TIME_FORMAT.parse(timeDisplay.getText());
                 if (time.getTime() == COUNTDOWN_END) {
                     timeline.stop();
                     backToMenu();
                 }
                 time.setTime(time.getTime() - 1000); // 1000ms = 1s
-                timeDisplay.setText(timeFormat.format(time));
+                timeDisplay.setText(TIME_FORMAT.format(time));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -85,6 +134,29 @@ public class GameTableController {
         timeline.getKeyFrames().add(frame);
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.play();
+    }
+
+    private void initializeServerConnection() throws ExecutionException, InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        scene.getRoot().addEventHandler(ServerRespondedEvent.INITIALIZATION_MESSAGE_EVENT_TYPE, event -> {
+            InitResponse response = (InitResponse) event.getResponse();
+            System.out.println(response.getFirstCard() + " " + response.getSecondCard());
+
+            latch.countDown();
+        });
+
+        scene.getRoot().addEventHandler(ServerRespondedEvent.NEXT_TURN_STARTED_EVENT_TYPE, event -> {
+            AmIWinnerResponse response = (AmIWinnerResponse) event.getResponse();
+            System.out.println(response.getCard());
+        });
+
+        server = new ServerSDK(scene.getRoot());
+        this.clientId = server.getStompSessionHandler().getClientID();
+        server.addPlayer(server.getStompSessionHandler().getClientID(), "player" + clientId);
+
+        // Wait for initialization
+        latch.await();
     }
 
     private DobbleImage[] generateImages() {
@@ -112,12 +184,14 @@ public class GameTableController {
         leftCard.setImages(generateImages());
 
         layoutItems();
+        setImages();
         pane.getChildren().addAll(leftCard, rightCard);
     }
 
     private void layoutItems() {
         ReadOnlyDoubleProperty width = scene.widthProperty();
         ReadOnlyDoubleProperty height = scene.heightProperty();
+
         DoubleBinding cardHeight = scene.heightProperty().divide(2);
         DoubleBinding cardRadius = scene.widthProperty().subtract(GAP * 4).divide(4);
 
@@ -131,33 +205,11 @@ public class GameTableController {
 
         DoubleBinding fontSize = width.add(height).divide(40);
 
-        scoreDisplay.layoutYProperty().bind(height.multiply(0.99));
         scoreDisplay.textProperty().bind(Bindings.createStringBinding(() -> "Score: " + score.get(), score));
         scoreDisplay.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString()));
 
-        timeDisplay.layoutXProperty().bind(width.multiply(0.865));
-        timeDisplay.layoutYProperty().bind(fontSize);
-        timeDisplay.setText(timeFormat.format(duration));
+        timeDisplay.setText(TIME_FORMAT.format(duration));
         timeDisplay.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString()));
-    }
-
-    public void setDifficultyLevel(DifficultyLevel level) {
-        this.level = level;
-        switch (level) {
-            case Easy:
-                duration = 8000;
-                break;
-            case Medium:
-                duration = 5000;
-                break;
-            case Hard:
-                duration = 3000;
-                break;
-            case Expert:
-                duration = 2000;
-                break;
-        }
-        timeDisplay.setText(timeFormat.format(duration));
     }
 
     private void backToMenu() {

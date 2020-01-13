@@ -2,7 +2,8 @@ package pl.dobblepolskab.gui;
 
 import gamecontent.DifficultyLevel;
 import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.event.ActionEvent;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -14,12 +15,14 @@ import pl.dobblepolskab.gui.events.SceneChangedEvent;
 import java.util.Arrays;
 import java.util.List;
 
-public class SingleplayerSettingsController {
+public class CreateGameController {
 
     @FXML
     private Scene scene;
     @FXML
     private VBox vBox;
+    @FXML
+    private ComboBox<Integer> playersCount;
     @FXML
     private ComboBox levelInput;
     @FXML
@@ -27,6 +30,7 @@ public class SingleplayerSettingsController {
     @FXML
     private Button play;
 
+    private int count = 1;
     private DifficultyLevel level = DifficultyLevel.Easy;
 
     @FXML
@@ -36,20 +40,33 @@ public class SingleplayerSettingsController {
 
         vBox.spacingProperty().bind(height.divide(2.3));
 
+        ObservableList<Integer> items = FXCollections.observableArrayList();
+        for (int i = 0; i < 8; i++)
+            items.add(i + 1);
+        playersCount.setItems(items);
+
         List<Button> buttons = Arrays.asList(goBack, play);
         for (Button button : buttons)
             button.prefWidthProperty().bind(width.multiply(0.3));
     }
 
-    public void difficultyLevelSelected(ActionEvent actionEvent) {
+    @FXML
+    public void playersCountSelected() {
+        count = playersCount.getValue();
+    }
+
+    @FXML
+    public void difficultyLevelSelected() {
         level = DifficultyLevel.valueOf((String) levelInput.getValue());
     }
 
-    public void goBackToMenu() {
-        scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "MainMenu.fxml"));
+    @FXML
+    public void goBack() {
+        scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "MultiplayerSettings.fxml"));
     }
 
+    @FXML
     public void startTheGame() {
-        scene.getRoot().fireEvent(new GameStartedEvent(GameStartedEvent.SINGLEPLAYER_STARTED_EVENT_TYPE, level));
+        scene.getRoot().fireEvent(new GameStartedEvent(GameStartedEvent.MULTIPLAYER_STARTED_EVENT_TYPE, level));
     }
 }

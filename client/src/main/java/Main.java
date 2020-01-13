@@ -3,9 +3,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import pl.dobblepolskab.gui.*;
-import pl.dobblepolskab.gui.events.SceneChangedEvent;
-import pl.dobblepolskab.gui.events.SingleplayerEndedEvent;
-import pl.dobblepolskab.gui.events.SingleplayerStartedEvent;
+import pl.dobblepolskab.gui.events.*;
 
 import java.io.IOException;
 
@@ -29,17 +27,14 @@ public class Main extends Application {
         primaryStage.setScene(currentScene);
         primaryStage.show();
 
-        setSceneChangeHandler();
+        setHandlers();
     }
 
-    private void setSceneChangeHandlerCommon(SceneChangedEvent sceneChangedEvent) {
+    private void loadAndLayoutNewScene() {
         try {
             final double currentWidth = currentScene.getWidth();
             final double currentHeight = currentScene.getHeight();
 
-            final String newSceneUrl = sceneChangedEvent.getNewSceneUrl();
-
-            loader = new FXMLLoader(getClass().getResource(newSceneUrl));
             currentScene = loader.load();
 
             /*
@@ -53,11 +48,9 @@ public class Main extends Application {
             primaryStage.setScene(currentScene);
             primaryStage.show();
 
-            sceneChangedEvent.consume();
-
             if (settingHandlerNeeded) {
                 settingHandlerNeeded = false;
-                setSceneChangeHandler();
+                setHandlers();
             }
 
         } catch (IOException e) {
@@ -65,15 +58,37 @@ public class Main extends Application {
         }
     }
 
-    private void setSceneChangeHandler() {
-        currentScene.getRoot().addEventHandler(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, this::setSceneChangeHandlerCommon);
-        currentScene.getRoot().addEventHandler(SingleplayerStartedEvent.SINGLEPLAYER_STARTED_EVENT_TYPE, singleplayerStartedEvent -> {
-            setSceneChangeHandlerCommon(singleplayerStartedEvent);
-            GameTableController controller = loader.getController();
-            controller.setDifficultyLevel(singleplayerStartedEvent.getDifficultyLevel());
+    private void setSceneChangedHandlerCommon(SceneChangedEvent sceneChangedEvent) {
+        final String newSceneUrl = sceneChangedEvent.getNewSceneUrl();
+        loader = new FXMLLoader(getClass().getResource(newSceneUrl));
+
+        sceneChangedEvent.consume();
+        loadAndLayoutNewScene();
+    }
+
+    private void setGameStartedHandlerCommon(GameTableController controller) {
+        loader = new FXMLLoader(getClass().getResource("GameTable.fxml"));
+        loader.setController(controller);
+
+        loadAndLayoutNewScene();
+    }
+
+    private void setHandlers() {
+        currentScene.getRoot().addEventHandler(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, this::setSceneChangedHandlerCommon);
+        currentScene.getRoot().addEventHandler(GameStartedEvent.SINGLEPLAYER_STARTED_EVENT_TYPE, event -> {
+            event.consume();
+
+            GameTableController controller = new GameTableController(GameType.SINGLEPLAYER, event.getDifficultyLevel());
+            setGameStartedHandlerCommon(controller);
+        });
+        currentScene.getRoot().addEventHandler(GameStartedEvent.MULTIPLAYER_STARTED_EVENT_TYPE, event -> {
+            event.consume();
+
+            GameTableController controller = new GameTableController(GameType.MULTIPLAYER, event.getDifficultyLevel());
+            setGameStartedHandlerCommon(controller);
         });
         currentScene.getRoot().addEventHandler(SingleplayerEndedEvent.SINGLEPLAYER_ENDED_EVENT_TYPE, singleplayerEndedEvent -> {
-            setSceneChangeHandlerCommon(singleplayerEndedEvent);
+            setSceneChangedHandlerCommon(singleplayerEndedEvent);
             SaveResultController controller = loader.getController();
             controller.setDifficultyLevel(singleplayerEndedEvent.getDifficultyLevel());
             controller.setScore(singleplayerEndedEvent.getScore());

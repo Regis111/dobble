@@ -6,9 +6,9 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 
-<?import javafx.geometry.Insets?>
 <Scene fx:controller="pl.dobblepolskab.gui.SingleplayerSettingsController" fx:id="scene"
        xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" width="800" height="600">
     <VBox fx:id="vBox" alignment="BOTTOM_CENTER" prefWidth="800" prefHeight="600">

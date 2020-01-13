@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.VBox?>
+
+<Scene fx:controller="pl.dobblepolskab.gui.MultiplayerSettingsController" fx:id="scene"
+       xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" width="800.0" height="600.0">
+    <VBox fx:id="vBox" alignment="BOTTOM_CENTER" prefWidth="800" prefHeight="600">
+        <VBox alignment="CENTER" spacing="10">
+            <Button fx:id="createGame" onMouseClicked="#createGame" text="Create a Game"/>
+            <Button fx:id="joinGame" text="Join a Game"/>
+        </VBox>
+        <Button fx:id="goBack" onMouseClicked="#goBackToMenu" text="Go Back">
+            <VBox.margin>
+                <Insets bottom="10.0"/>
+            </VBox.margin>
+        </Button>
+    </VBox>
+</Scene>

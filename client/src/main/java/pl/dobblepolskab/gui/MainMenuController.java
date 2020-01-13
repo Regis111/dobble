@@ -47,6 +47,11 @@ public class MainMenuController {
     }
 
     @FXML
+    public void startMultiplayer() {
+        scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "MultiplayerSettings.fxml"));
+    }
+
+    @FXML
     public void showLeaderboards() {
         scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "Leaderboards.fxml"));
     }

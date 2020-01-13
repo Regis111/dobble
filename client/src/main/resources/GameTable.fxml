@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.*?>
+<?import pl.dobblepolskab.gui.DobbleCard?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
-<?import pl.dobblepolskab.gui.DobbleCard?>
+<?import javafx.scene.layout.VBox?>
 
-<Scene fx:controller="pl.dobblepolskab.gui.GameTableController" fx:id="scene"
-       xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" width="800" height="600">
+<Scene fx:id="scene" xmlns:fx="http://javafx.com/fxml/1" width="800" height="600">
     <Pane fx:id="pane" style="-fx-background-color: lightgreen">
         <DobbleCard fx:id="leftCard"/>
         <DobbleCard fx:id="rightCard"/>
-        <Text fx:id="scoreDisplay" fill="black" style="-fx-font: 40 arial"/>
-        <Text fx:id="timeDisplay" fill="black" style="-fx-font: 40 arial"/>
+        <VBox alignment="BOTTOM_LEFT" prefHeight="${scene.height}">
+            <Text fx:id="scoreDisplay" fill="black"/>
+        </VBox>
+        <VBox alignment="TOP_RIGHT" prefWidth="${scene.width}">
+            <Text fx:id="timeDisplay" fill="black"/>
+        </VBox>
     </Pane>
 </Scene>

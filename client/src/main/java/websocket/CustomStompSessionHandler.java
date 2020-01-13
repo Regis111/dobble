@@ -1,6 +1,7 @@
 package websocket;
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.scene.Parent;
 import messages.responses.AmIWinnerResponse;
 import messages.responses.InitResponse;
 import org.slf4j.Logger;
@@ -13,9 +14,11 @@ public class CustomStompSessionHandler extends StompSessionHandlerAdapter {
     private Logger logger = LoggerFactory.getLogger(CustomStompSessionHandler.class);
 
     private String clientID;
+    private final Parent gameObject;
 
-    public CustomStompSessionHandler(String clientID) {
+    public CustomStompSessionHandler(String clientID, Parent gameObject) {
         this.clientID = clientID;
+        this.gameObject = gameObject;
     }
 
     public String getClientID() {
@@ -25,8 +28,8 @@ public class CustomStompSessionHandler extends StompSessionHandlerAdapter {
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         logger.info("New session established : " + session.getSessionId());
-        session.subscribe("/topic/initReply-" + clientID, new InitStompFrameHandler());
-        session.subscribe("/topic/nextTurnReply-" + clientID, new NextTurnStompFrameHandler());
+        session.subscribe("/topic/initReply-" + clientID, new InitStompFrameHandler(gameObject));
+        session.subscribe("/topic/nextTurnReply-" + clientID, new NextTurnStompFrameHandler(gameObject));
     }
 
     @Override
@@ -58,9 +61,9 @@ class InitStompFrameHandler implements StompFrameHandler {
 
     private NotifyService notifyService;
 
-    /*public CustomStompFrameHandler(NotifyService notifyService) {
-        this.notifyService = notifyService;
-    }*/
+    public InitStompFrameHandler(Parent gameObject) {
+        this.notifyService = new NotifyServiceImpl(gameObject);
+    }
 
     @Override
     public Type getPayloadType(StompHeaders headers) {
@@ -72,7 +75,8 @@ class InitStompFrameHandler implements StompFrameHandler {
         ObjectMapper mapper = new ObjectMapper();
         try {
             logger.info("Received: {}", (String)payload);
-            //InitResponse response = mapper.readValue((String)payload, InitResponse.class);
+            InitResponse response = mapper.readValue((String)payload, InitResponse.class);
+            notifyService.notifyAboutInit(response);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,9 +88,9 @@ class NextTurnStompFrameHandler implements StompFrameHandler {
 
     private NotifyService notifyService;
 
-    /*public CustomStompFrameHandler(NotifyService notifyService) {
-        this.notifyService = notifyService;
-    }*/
+    public NextTurnStompFrameHandler(Parent gameObject) {
+        this.notifyService = new NotifyServiceImpl(gameObject);
+    }
 
     @Override
     public Type getPayloadType(StompHeaders headers) {
@@ -98,8 +102,8 @@ class NextTurnStompFrameHandler implements StompFrameHandler {
         ObjectMapper mapper = new ObjectMapper();
         try {
             logger.info("Received: {}", (String)payload);
-            //AmIWinnerResponse amIWinnerResponse = mapper.readValue((String)payload, AmIWinnerResponse.class);
-
+            AmIWinnerResponse amIWinnerResponse = mapper.readValue((String)payload, AmIWinnerResponse.class);
+            notifyService.notifyAboutNextTurn(amIWinnerResponse);
         } catch (Exception e) {
             e.printStackTrace();
         }

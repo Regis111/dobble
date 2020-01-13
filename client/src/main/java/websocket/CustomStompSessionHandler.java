@@ -2,6 +2,7 @@ package websocket;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import messages.responses.AmIWinnerResponse;
+import messages.responses.InitResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.messaging.simp.stomp.*;
@@ -24,7 +25,8 @@ public class CustomStompSessionHandler extends StompSessionHandlerAdapter {
     @Override
     public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
         logger.info("New session established : " + session.getSessionId());
-        session.subscribe("/topic/reply-" + clientID, new CustomStompFrameHandler());
+        session.subscribe("/topic/initReply-" + clientID, new InitStompFrameHandler());
+        session.subscribe("/topic/nextTurnReply-" + clientID, new NextTurnStompFrameHandler());
     }
 
     @Override
@@ -51,8 +53,8 @@ public class CustomStompSessionHandler extends StompSessionHandlerAdapter {
     }
 }
 
-class CustomStompFrameHandler implements StompFrameHandler {
-    private Logger logger = LoggerFactory.getLogger(CustomStompFrameHandler.class);
+class InitStompFrameHandler implements StompFrameHandler {
+    private Logger logger = LoggerFactory.getLogger(InitStompFrameHandler.class);
 
     private NotifyService notifyService;
 
@@ -70,8 +72,35 @@ class CustomStompFrameHandler implements StompFrameHandler {
         ObjectMapper mapper = new ObjectMapper();
         try {
             logger.info("Received: {}", (String)payload);
-            AmIWinnerResponse amIWinnerResponse = mapper.readValue((String)payload, AmIWinnerResponse.class);
-        } catch (JsonProcessingException e) {
+            //InitResponse response = mapper.readValue((String)payload, InitResponse.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+class NextTurnStompFrameHandler implements StompFrameHandler {
+    private Logger logger = LoggerFactory.getLogger(NextTurnStompFrameHandler.class);
+
+    private NotifyService notifyService;
+
+    /*public CustomStompFrameHandler(NotifyService notifyService) {
+        this.notifyService = notifyService;
+    }*/
+
+    @Override
+    public Type getPayloadType(StompHeaders headers) {
+        return String.class;
+    }
+
+    @Override
+    public void handleFrame(StompHeaders headers, Object payload) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            logger.info("Received: {}", (String)payload);
+            //AmIWinnerResponse amIWinnerResponse = mapper.readValue((String)payload, AmIWinnerResponse.class);
+
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

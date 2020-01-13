@@ -7,6 +7,7 @@ import messages.requests.*;
 import messages.responses.AmIWinnerResponse;
 import messages.responses.InitResponse;
 import messages.responses.ResponseType;
+import org.slf4j.ILoggerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,17 +83,14 @@ public class MainController {
 
         logger.info("clientID {} shoutID {}", clientID, shoutID);
 
-        AmIWinnerResponse win = new AmIWinnerResponse(clientID, shoutID, ResponseType.WIN, 38);
-        this.communicationService.sendOnTopic("/topic/reply-" + clientID, win);
-
-        Optional<Player> player = this.playerService.getPlayer(clientID);
-
-        /*if (!this.gameService.isWinner(clientID, shoutID)) {
+        if (!this.gameService.isWinner(clientID, shoutID)) {
             logger.info("Client: {} didn't win shout {}", clientID, shoutID);
             return;
-        }*/
+        }
 
         logger.info("Client {} won shout {}", clientID, shoutID);
+
+        Optional<Player> player = this.playerService.getPlayer(clientID);
 
         Map<String, HumanPlayer> humanPlayers = this.playerService.getHumanPlayers();
 
@@ -102,13 +100,18 @@ public class MainController {
         humanPlayers.values().forEach(humanPlayer -> {
             Pair pair = this.gameService.getNextTurnState(humanPlayer.getClientId());
             AmIWinnerResponse loss = new AmIWinnerResponse(humanPlayer.getClientId(), shoutID, ResponseType.LOST, pair.getFirst());
-            this.communicationService.sendOnTopic("/topic/reply/" + humanPlayer.getClientId(), loss);
+            this.communicationService.sendOnTopic("/topic/nextTurnReply-" + humanPlayer.getClientId(), loss);
+            logger.info("Sending next turn response to clientID = {} with cards: [ {} , {} ]",
+                    humanPlayer.getClientId(),
+                    pair.getFirst(),
+                    pair.getSecond()
+            );
         });
 
         Pair pair = this.gameService.getNextTurnState(clientID);
         if (player.isPresent()) {
             AmIWinnerResponse win1 = new AmIWinnerResponse(player.get().getClientId(), shoutID, ResponseType.WIN, pair.getFirst());
-            this.communicationService.sendOnTopic("/topic/reply-" + player.get().getClientId(), win1);
+            this.communicationService.sendOnTopic("/topic/nextTurnReply-" + player.get().getClientId(), win1);
         } else {
             logger.error("Player who won with ID = {} not in Server", clientID);
         }
@@ -125,8 +128,11 @@ public class MainController {
         }
 
         this.configurationService.setComputerPlayersNumber(request.getComputerPlayersNumber());
+        logger.info("Number of computer players set to {}", request.getComputerPlayersNumber());
         this.configurationService.setComputerDifficulty(request.getComputerDifficulty());
+        logger.info("Computer difficulty set to {}", request.getComputerDifficulty());
         this.configurationService.startGameSession();
+        logger.info("Starting game session");
 
         Map<String, HumanPlayer> humanPlayers = this.playerService.getHumanPlayers();
 
@@ -134,7 +140,12 @@ public class MainController {
             Pair pair = this.gameService.getNextTurnState(humanPlayer.getClientId());
             InitResponse loss = new InitResponse(
                     humanPlayer.getClientId(), 1, pair.getFirst(), pair.getSecond());
-            this.communicationService.sendOnTopic("/topic/reply-" + humanPlayer.getClientId(), loss);
+            this.communicationService.sendOnTopic("/topic/initReply-" + humanPlayer.getClientId(), loss);
+            logger.info("Sending init response to clientID = {} with cards: [ {} , {} ]",
+                    humanPlayer.getClientId(),
+                    pair.getFirst(),
+                    pair.getSecond()
+            );
         });
     }
 
@@ -148,6 +159,7 @@ public class MainController {
         }
 
         this.adminPlayerService.deletePlayerFromGame(request.getClientID());
+        logger.info("Deleting human player, clientID = {} ", request.getClientID());
     }
 
     @MessageMapping("/addPlayer")
@@ -160,11 +172,13 @@ public class MainController {
         }
 
         this.adminPlayerService.addPlayerToGame(request.getPlayerToAddName(), request.getClientID());
+        logger.info("Adding human player, name = {}, clientID = {} ", request.getPlayerToAddName(), request.getClientID());
     }
 
     @MessageMapping("/endSession")
     public void endSession(String json) {
         this.configurationService.endGameSession();
+        logger.info("Ending game session");
     }
 
 }

@@ -7,6 +7,9 @@ public class InitRequest extends Request {
 
     private int computerPlayersNumber;
 
+    public InitRequest() {
+    }
+
     public InitRequest(String clientID, DifficultyLevel computerDifficulty, int computerPlayersNumber) {
         super(clientID);
         this.computerDifficulty = computerDifficulty;

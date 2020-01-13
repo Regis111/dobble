@@ -2,6 +2,7 @@ package websocket;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import gamecontent.DifficultyLevel;
 import messages.requests.AddPlayerRequest;
 import messages.requests.AmIWinnerRequest;
 import messages.requests.DeletePlayerRequest;
@@ -41,23 +42,27 @@ public class ServerSDK {
         return session;
     }
 
+    public CustomStompSessionHandler getStompSessionHandler() {
+        return stompSessionHandler;
+    }
+
     public void askIfWonShout(String clientID, int shoutID) {
         AmIWinnerRequest amIWinnerRequest = new AmIWinnerRequest(clientID, shoutID);
         this.logger.info("Sending amIWinnerRequest {}", amIWinnerRequest);
         try {
-            String request = new ObjectMapper().writeValueAsString(amIWinnerRequest);
-            this.session.send("/app/amIWinner", request);
+            String payload = new ObjectMapper().writeValueAsString(amIWinnerRequest);
+            this.session.send("/app/amIWinner", payload);
         } catch (Exception e) {
             e.fillInStackTrace();
         }
     }
 
-    public void initSessionAsAdmin(String clientID, int computerDifficulty, int computerPlayersNumber) {
+    public void initSessionAsAdmin(String clientID, DifficultyLevel computerDifficulty, int computerPlayersNumber) {
         InitRequest initRequest = new InitRequest(clientID, computerDifficulty, computerPlayersNumber);
         this.logger.info("Sending initSessionRequest {}", initRequest);
         try {
-            String request = new ObjectMapper().writeValueAsString(initRequest);
-            this.session.send("/app/init", initRequest);
+            String payload = new ObjectMapper().writeValueAsString(initRequest);
+            this.session.send("/app/init", payload);
         } catch (Exception e) {
             e.fillInStackTrace();
         }
@@ -65,6 +70,7 @@ public class ServerSDK {
 
     public void addPlayer(String clientID, String playerName) {
         AddPlayerRequest addPlayerRequest = new AddPlayerRequest(clientID, playerName);
+        this.logger.info("Sending addPlayerRequest {}", addPlayerRequest);
         try {
             String payload = new ObjectMapper().writeValueAsString(addPlayerRequest);
             session.send("/app/addPlayer", payload);
@@ -75,6 +81,7 @@ public class ServerSDK {
 
     public void deletePlayer(String clientID, String clientToDeleteID) {
         DeletePlayerRequest request= new DeletePlayerRequest(clientID, clientToDeleteID);
+        this.logger.info("Sending deletePlayerRequest {}", request);
         try {
             String payload = new ObjectMapper().writeValueAsString(request);
             session.send("/app/deletePlayer", payload);
@@ -86,8 +93,12 @@ public class ServerSDK {
     public static void main(String[] args) {
         try {
             ServerSDK sdk = new ServerSDK();
-            Thread.sleep(1000);
-            sdk.askIfWonShout(sdk.stompSessionHandler.getClientID(), 1);
+            Thread.sleep(3000);
+            sdk.addPlayer(sdk.stompSessionHandler.getClientID(), "Ja");
+            Thread.sleep(3000);
+            sdk.initSessionAsAdmin(sdk.stompSessionHandler.getClientID(), DifficultyLevel.Easy, 2);
+            //Thread.sleep(2000);
+            //sdk.askIfWonShout(sdk.stompSessionHandler.getClientID(), 1);
             new Scanner(System.in).nextLine();
         } catch (Exception e) {
             System.out.println(e.getMessage());

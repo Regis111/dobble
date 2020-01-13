@@ -2,7 +2,7 @@ package pl.dobblepolskab.gui.events;
 
 import javafx.event.Event;
 import javafx.event.EventType;
-import pl.dobblepolskab.gui.DifficultyLevel;
+import gamecontent.DifficultyLevel;
 
 public class SingleplayerEndedEvent extends SceneChangedEvent {
     public static final EventType<SingleplayerEndedEvent> SINGLEPLAYER_ENDED_EVENT_TYPE = new EventType<>("SingleplayerEndedEvent");

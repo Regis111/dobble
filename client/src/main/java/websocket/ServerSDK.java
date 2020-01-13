@@ -27,12 +27,12 @@ public class ServerSDK {
     private CustomStompSessionHandler stompSessionHandler;
 
     // The Parent object is by this class to issue messages to the GUI as a response to the messages from the server.
-    public ServerSDK(Parent gameObject, String playerName) throws ExecutionException, InterruptedException {
+    public ServerSDK(Parent gameObject) throws ExecutionException, InterruptedException {
         WebSocketStompClient webSocketStompClient = new WebSocketStompClient(new StandardWebSocketClient());
         webSocketStompClient.setMessageConverter(new StringMessageConverter());
         this.stompSessionHandler = new CustomStompSessionHandler(UUID.randomUUID().toString(), gameObject);
         this.session = webSocketStompClient.connect(URL, stompSessionHandler).get();
-        this.addPlayer(stompSessionHandler.getClientID(), playerName);
+        this.addPlayer(stompSessionHandler.getClientID(), "player" + stompSessionHandler.getClientID());
     }
 
     public StompSession getSession() {

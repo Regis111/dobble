@@ -1,11 +1,13 @@
 package gamecontent;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class GameCardSymbolTest {
     private static String errorString = "Validation of game content box doesn't work!";
 
+    @Ignore
     @Test
     public void setImageTest(){
         // given

@@ -25,7 +25,6 @@ public class ServerGameSession implements GameService, SessionConfigurationServi
     private PlayersManager playersManager;
     private boolean sessionRunning;
     private int shoutId;
-    private boolean isCardTaken;
 
     @Autowired
     public ServerGameSession(GameMainStack gameMainStack,
@@ -35,7 +34,6 @@ public class ServerGameSession implements GameService, SessionConfigurationServi
         this.playersManager = playersManager;
         sessionRunning = false;
         shoutId = 0;
-        isCardTaken = false;
     }
 
     @Override
@@ -62,24 +60,16 @@ public class ServerGameSession implements GameService, SessionConfigurationServi
                 gameContent.getCardIdInModel(playersManager.getTopCardOfPlayer(playerClientId)));
     }
 
-    public boolean startNextShout(){
-        if(!isCardTaken)
-            return false;
-        shoutId++;
-        isCardTaken = false;
-        return true;
-    }
-
     public int getShoutId() {
         return shoutId;
     }
 
     @Override
     public boolean isWinner(String playerClientId, int requestShoutId){
-        if(requestShoutId != shoutId || isCardTaken)
+        if(requestShoutId != shoutId)
             return false;
         playersManager.pushGameCardOnPlayerStack(playerClientId, mainStack.popCard());
-        isCardTaken = true;
+        shoutId++;
         return true;
     }
 

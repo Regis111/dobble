@@ -61,7 +61,7 @@ public class GameContent {
         Optional<GameCardSymbol> gameCardSymbolOptional;
         do {
             gameCardSymbolOptional = gameContentSource.getNextGameCardSymbol();
-            if (!gameCardSymbolOptional.isPresent())
+            if (gameCardSymbolOptional.isEmpty())
                 break;
             addGameCardSymbol(gameCardSymbolOptional.get());
         }
@@ -69,7 +69,7 @@ public class GameContent {
         Optional<GameCard> gameCardOptional;
         do {
             gameCardOptional = gameContentSource.getNextGameCard();
-            if (!gameCardOptional.isPresent())
+            if (gameCardOptional.isEmpty())
                 break;
             addGameCard(gameCardOptional.get());
         }

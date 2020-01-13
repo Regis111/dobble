@@ -1,9 +1,11 @@
 package gamecontent;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class GameContentTest {
 
+    @Ignore
     @Test
     public void addGameCardTest(){
         // given
@@ -25,6 +27,7 @@ public class GameContentTest {
         Assert.assertFalse(errorString, thirdAddPassed);
     }
 
+    @Ignore
     @Test
     public void importGameContentTest(){
         // given

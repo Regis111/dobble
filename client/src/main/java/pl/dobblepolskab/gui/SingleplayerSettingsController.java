@@ -1,5 +1,6 @@
 package pl.dobblepolskab.gui;
 
+import gamecontent.DifficultyLevel;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

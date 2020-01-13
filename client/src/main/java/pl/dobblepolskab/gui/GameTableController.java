@@ -1,5 +1,6 @@
 package pl.dobblepolskab.gui;
 
+import gamecontent.DifficultyLevel;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;

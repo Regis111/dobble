@@ -1,5 +1,6 @@
 package pl.dobblepolskab.model.servergamesession;
 
+import gamecontent.DifficultyLevel;
 import gamecontent.GameCard;
 import gamecontent.GameContent;
 import messages.Pair;
@@ -88,7 +89,7 @@ public class ServerGameSession implements GameService, SessionConfigurationServi
     }
 
     @Override
-    public void setComputerDifficulty(int computerDifficulty) {
+    public void setComputerDifficulty(DifficultyLevel computerDifficulty) {
         playersManager.setComputerIntelligenceLevel(computerDifficulty);
     }
 }

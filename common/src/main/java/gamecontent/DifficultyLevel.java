@@ -1,4 +1,4 @@
-package pl.dobblepolskab.gui;
+package gamecontent;
 
 public enum DifficultyLevel {
     Easy,

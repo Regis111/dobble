@@ -1,17 +1,19 @@
 package messages.requests;
 
+import gamecontent.DifficultyLevel;
+
 public class InitRequest extends Request {
-    private int computerDifficulty;
+    private DifficultyLevel computerDifficulty;
 
     private int computerPlayersNumber;
 
-    public InitRequest(String clientID, int computerDifficulty, int computerPlayersNumber) {
+    public InitRequest(String clientID, DifficultyLevel computerDifficulty, int computerPlayersNumber) {
         super(clientID);
         this.computerDifficulty = computerDifficulty;
         this.computerPlayersNumber = computerPlayersNumber;
     }
 
-    public int getComputerDifficulty() {
+    public DifficultyLevel getComputerDifficulty() {
         return computerDifficulty;
     }
 

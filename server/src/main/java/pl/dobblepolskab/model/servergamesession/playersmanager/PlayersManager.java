@@ -1,5 +1,6 @@
 package pl.dobblepolskab.model.servergamesession.playersmanager;
 
+import gamecontent.DifficultyLevel;
 import gamecontent.GameCard;
 import gamecontent.GameContent;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class PlayersManager implements PlayerService, AdminPlayerService {
     private HashMap<String, Player> playersList;
     private int computerPlayersNum;
     private GameContent gameContent;
-    private int computerIntelligenceLevel;
+    private DifficultyLevel computerIntelligenceLevel;
     public static final int maxPlayersNumber = 8;
 
     @Autowired
@@ -31,7 +32,7 @@ public class PlayersManager implements PlayerService, AdminPlayerService {
 
     private void initObject(){
         playersList = new HashMap<>();
-        computerIntelligenceLevel = 1;
+        computerIntelligenceLevel = DifficultyLevel.Easy;
         computerPlayersNum = 0;
     }
 
@@ -87,9 +88,7 @@ public class PlayersManager implements PlayerService, AdminPlayerService {
         this.computerPlayersNum = computerPlayersNum;
     }
 
-    public void setComputerIntelligenceLevel(int computerIntelligenceLevel) {
-        if(computerIntelligenceLevel != 1)
-            return;
+    public void setComputerIntelligenceLevel(DifficultyLevel computerIntelligenceLevel) {
         this.computerIntelligenceLevel = computerIntelligenceLevel;
     }
 

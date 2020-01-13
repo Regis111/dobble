@@ -10,12 +10,12 @@ import pl.dobblepolskab.model.servergamesession.gamecardsstack.PlayerStack;
 public abstract class Player {
     private String name;
     private String clientId;
-    @Autowired
     private PlayerStack cardsStack;
 
     public Player(String name, String clientId){
         this.name = name;
         this.clientId = clientId;
+        cardsStack = new PlayerStack();
     }
 
     public void preparePlayerToGame(GameCard firstCard){

@@ -82,12 +82,6 @@ public class PlayersManager implements PlayerService, AdminPlayerService {
         playersList.get(playerClientId).pushCardOnStack(gameCard);
     }
 
-    public void setComputerPlayersNumber(int computerPlayersNum) {
-        if(computerPlayersNum < 0 || computerPlayersNum > 7)
-            return;
-        this.computerPlayersNum = computerPlayersNum;
-    }
-
     public void setComputerIntelligenceLevel(DifficultyLevel computerIntelligenceLevel) {
         this.computerIntelligenceLevel = computerIntelligenceLevel;
     }

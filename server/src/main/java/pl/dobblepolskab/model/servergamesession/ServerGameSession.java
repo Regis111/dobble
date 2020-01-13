@@ -25,6 +25,7 @@ public class ServerGameSession implements GameService, SessionConfigurationServi
     private PlayersManager playersManager;
     private boolean sessionRunning;
     private int shoutId;
+    private int computerPlayersNum;
 
     @Autowired
     public ServerGameSession(GameMainStack gameMainStack,
@@ -34,12 +35,15 @@ public class ServerGameSession implements GameService, SessionConfigurationServi
         this.playersManager = playersManager;
         sessionRunning = false;
         shoutId = 0;
+        computerPlayersNum = 0;
     }
 
     @Override
     public void startGameSession(){
         if(sessionRunning)
             return;
+        for(int i = 0; i < computerPlayersNum; i++)
+            playersManager.addComputerPlayer();
         LinkedList<GameCard> cardsToGiveOut = new LinkedList<>(gameContent.getCards());
         Collections.shuffle(cardsToGiveOut);
         playersManager.preparePlayersToGame(cardsToGiveOut);
@@ -75,7 +79,9 @@ public class ServerGameSession implements GameService, SessionConfigurationServi
 
     @Override
     public void setComputerPlayersNumber(int playersNumber) {
-        playersManager.setComputerPlayersNumber(playersNumber);
+        if(playersNumber < 0 || playersNumber > 7)
+            return;
+        computerPlayersNum = playersNumber;
     }
 
     @Override

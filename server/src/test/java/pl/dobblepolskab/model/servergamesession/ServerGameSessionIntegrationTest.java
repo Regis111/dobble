@@ -49,7 +49,45 @@ public class ServerGameSessionIntegrationTest {
         Assert.assertFalse("deleteHumanPlayer()", deleteHumanPlayerRetVal[1]);
 
         //when-3
+        boolean []addHumanPlayerRetVal2 = {playersManager.addHumanPlayer("Human 1", "Human_1"),
+                playersManager.addHumanPlayer("Human 2", "Human_2")};
+
+        //then-3
+        Assert.assertTrue("addHumanPlayer()", addHumanPlayerRetVal2[0]);
+        Assert.assertFalse("addHumanPlayer()", addHumanPlayerRetVal2[1]);
+
+        //when-4
         serverGameSession.startGameSession();
+        boolean []isWinner1 = {serverGameSession.isWinner("Human_2", 1),
+                serverGameSession.isWinner("Human_1", 1),
+                serverGameSession.isWinner("Human_2", 1)};
+
+        //then-4
+        Assert.assertTrue("isWinner()", isWinner1[0]);
+        Assert.assertFalse("isWinner()", isWinner1[1]);
+        Assert.assertFalse("isWinner()", isWinner1[2]);
+
+        //when-5
+        serverGameSession.startGameSession();
+        boolean []isWinner2 = {serverGameSession.isWinner("Human_2", 1),
+                serverGameSession.isWinner("Human_1", 1),
+                serverGameSession.isWinner("Human_1", 1)};
+
+        //then-5
+        Assert.assertFalse("isWinner()", isWinner2[0]);
+        Assert.assertFalse("isWinner()", isWinner2[1]);
+        Assert.assertFalse("isWinner()", isWinner2[2]);
+
+        //when-6
+        serverGameSession.startGameSession();
+        boolean []isWinner3 = {serverGameSession.isWinner("Human_1", 2),
+                serverGameSession.isWinner("Human_2", 3),
+                serverGameSession.isWinner("Human_1", 3)};
+
+        //then-6
+        Assert.assertTrue("isWinner()", isWinner3[0]);
+        Assert.assertTrue("isWinner()", isWinner3[1]);
+        Assert.assertFalse("isWinner()", isWinner3[2]);
         
     }
 }

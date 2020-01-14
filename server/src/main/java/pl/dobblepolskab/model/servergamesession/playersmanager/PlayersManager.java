@@ -117,4 +117,8 @@ public class PlayersManager implements PlayerService, AdminPlayerService {
             deleteHumanPlayer(playerClientID);
         return foundPlayer;
     }
+
+    public void reset(){
+        initObject();
+    }
 }

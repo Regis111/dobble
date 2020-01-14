@@ -53,9 +53,12 @@ public class ServerGameSession implements GameService, SessionConfigurationServi
     }
 
     public void endGameSession(){
-        if(!sessionRunning || mainStack.getCardsCount() > 0)
+        if(!sessionRunning)
             return;
+        playersManager.reset();
         sessionRunning = false;
+        shoutId = 0;
+        computerPlayersNum = 0;
     }
 
     @Override

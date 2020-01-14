@@ -156,11 +156,11 @@ public class GameTableController {
         server.initSessionAsAdmin(clientId, level, 2);
 
         // Wait for initialization
-        latch.await();
+//        latch.await();
     }
 
     private DobbleImage[] generateImages() {
-        List<String> urls = Arrays.asList("file:images/dolphin.png", "file:images/heart.png", "file:images/crayon.png");
+        List<String> urls = Arrays.asList("file:images/1s.png", "file:images/16s.png", "file:images/21s.png");
         DobbleImage[] images = new DobbleImage[8];
         for (int i = 0; i < 8; i++) {
             int r = ThreadLocalRandom.current().nextInt(0, 3);

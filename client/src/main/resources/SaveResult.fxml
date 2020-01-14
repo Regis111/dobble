@@ -16,6 +16,10 @@
             <Label text="User Name:"/>
             <TextField fx:id="nameField"/>
         </HBox>
-        <Button fx:id="saveButton" text="Save" onMouseClicked="#saveResult"/>
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="goBack" text="Main Menu" onMouseClicked="#goBackToMenu"/>
+            <Button fx:id="saveButton" text="Save" onMouseClicked="#saveResult"/>
+        </HBox>
+
     </VBox>
 </Scene>

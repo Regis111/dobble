@@ -1,8 +1,10 @@
 package pl.dobblepolskab.gui;
 
 import gamecontent.DifficultyLevel;
+import gamecontent.GameContent;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.IntegerProperty;
@@ -20,6 +22,7 @@ import pl.dobblepolskab.gui.events.ServerRespondedEvent;
 import pl.dobblepolskab.gui.events.SingleplayerEndedEvent;
 import websocket.ServerSDK;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -29,9 +32,6 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class GameTableController {
     private static final double GAP = 10.0;
@@ -55,7 +55,7 @@ public class GameTableController {
     private final GameType type;
     private IntegerProperty score;
     private DifficultyLevel level;
-    private int turnId;
+    private static int turnId = 0;
 
     // This field is used only in the singleplayer mode.
     private long duration;
@@ -63,12 +63,13 @@ public class GameTableController {
     // This fields are used only in the multiplayer mode.
     private ServerSDK server;
     private String clientId;
+    private GameContent gameContent = GameContent.getInstance();
 
     public GameTableController(GameType type, DifficultyLevel level) {
         this.type = type;
         this.level = level;
         this.score = new SimpleIntegerProperty(0);
-        this.turnId = 0;
+        //this.turnId = 0;
 
         switch (level) {
             case Easy:
@@ -115,7 +116,8 @@ public class GameTableController {
             }
         });
 
-        setImages();
+        if (type == GameType.SINGLEPLAYER)
+            setImages();
 
         Timeline timeline = new Timeline();
         KeyFrame frame = new KeyFrame(Duration.seconds(1), event -> {
@@ -143,12 +145,42 @@ public class GameTableController {
             InitResponse response = (InitResponse) event.getResponse();
             System.out.println(response.getFirstCard() + " " + response.getSecondCard());
 
+            String[] leftCardImagePaths = gameContent.getGameCardSymbolPaths(response.getFirstCard());
+            DobbleImage[] leftCardImages = new DobbleImage[8];
+            for (int i = 0; i < 8; i++) {
+                File f = new File(leftCardImagePaths[i]);
+                leftCardImages[i] = new DobbleImage(i + 1, "file:images/" + f.getName());
+            }
+            String[] rightCardImagePaths = gameContent.getGameCardSymbolPaths(response.getSecondCard());
+            DobbleImage[] rightCardImages = new DobbleImage[8];
+            for (int i = 0; i < 8; i++) {
+                File f = new File(rightCardImagePaths[i]);
+                rightCardImages[i] = new DobbleImage(i + 1, "file:images/" + f.getName());
+            }
+
+
+            leftCard.setImages(leftCardImages);
+            rightCard.setImages(rightCardImages);
             latch.countDown();
         });
 
         scene.getRoot().addEventHandler(ServerRespondedEvent.NEXT_TURN_STARTED_EVENT_TYPE, event -> {
             AmIWinnerResponse response = (AmIWinnerResponse) event.getResponse();
             System.out.println(response.getCard());
+
+            String[] imagePaths = gameContent.getGameCardSymbolPaths(response.getCard());
+            DobbleImage[] images = new DobbleImage[8];
+            for (int i = 0; i < 8; i++) {
+                File f = new File(imagePaths[i]);
+                images[i] = new DobbleImage(i + 1, "file:images/" + f.getName());
+            }
+
+            Platform.runLater(() -> {
+                refresh();
+                leftCard.setImages(images);
+                layoutItems();
+                pane.getChildren().addAll(leftCard, rightCard);
+            });
         });
 
         server = new ServerSDK(scene.getRoot());
@@ -156,15 +188,17 @@ public class GameTableController {
         server.initSessionAsAdmin(clientId, level, 2);
 
         // Wait for initialization
-//        latch.await();
+        latch.await();
     }
 
     private DobbleImage[] generateImages() {
-        List<String> urls = Arrays.asList("file:images/1s.png", "file:images/16s.png", "file:images/21s.png");
+        //List<String> urls = Arrays.asList("file:images/1s.png", "file:images/16s.png", "file:images/21s.png");
+        final int c = ThreadLocalRandom.current().nextInt(1, 57);
+        String[] imagePaths = gameContent.getGameCardSymbolPaths(c);
         DobbleImage[] images = new DobbleImage[8];
         for (int i = 0; i < 8; i++) {
-            int r = ThreadLocalRandom.current().nextInt(0, 3);
-            images[i] = new DobbleImage(i + 1, urls.get(r));
+            File f = new File(imagePaths[i]);
+            images[i] = new DobbleImage(i + 1, "file:images/" + f.getName());
         }
         return images;
     }
@@ -181,11 +215,13 @@ public class GameTableController {
         rightCard = leftCard;
 
         leftCard = new DobbleCard();
-        leftCard.setImages(generateImages());
+        if (type == GameType.SINGLEPLAYER) {
+            leftCard.setImages(generateImages());
 
-        layoutItems();
-        setImages();
-        pane.getChildren().addAll(leftCard, rightCard);
+            layoutItems();
+            setImages();
+            pane.getChildren().addAll(leftCard, rightCard);
+        }
     }
 
     private void layoutItems() {
@@ -213,6 +249,11 @@ public class GameTableController {
     }
 
     private void backToMenu() {
+        if (type == GameType.MULTIPLAYER) {
+            server.deletePlayer(clientId, clientId);
+            server.getSession().disconnect();
+        }
+
         scene.getRoot().fireEvent(new SingleplayerEndedEvent(SingleplayerEndedEvent.SINGLEPLAYER_ENDED_EVENT_TYPE, "SaveResult.fxml", level, score.get()));
     }
 }

@@ -27,6 +27,8 @@ public class SaveResultController {
     @FXML
     private TextField nameField;
     @FXML
+    private Button goBack;
+    @FXML
     private Button saveButton;
 
     private DifficultyLevel level;
@@ -41,7 +43,13 @@ public class SaveResultController {
         scoreDisplay.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString()));
 
         nameField.prefWidthProperty().bind(width.multiply(0.15));
+        goBack.prefWidthProperty().bind(width.multiply(0.15));
         saveButton.prefWidthProperty().bind(width.multiply(0.15));
+    }
+
+    @FXML
+    public void goBackToMenu() {
+        scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "MainMenu.fxml"));
     }
 
     @FXML

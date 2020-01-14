@@ -1,5 +1,6 @@
 package pl.dobblepolskab.gui;
 
+import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
 import javafx.event.EventHandler;
 import javafx.scene.Group;
@@ -45,10 +46,11 @@ public class DobbleCard extends Group {
         layout.layoutImages(imageViews);
         setRotate(360 * Math.random());
 
-
-        getChildren().clear();
-        getChildren().add(circle);
-        getChildren().addAll(imageViews);
+        Platform.runLater(() -> {
+            getChildren().clear();
+            getChildren().add(circle);
+            getChildren().addAll(imageViews);
+        });
     }
 
     public DobbleImage getHighlightedImage() {

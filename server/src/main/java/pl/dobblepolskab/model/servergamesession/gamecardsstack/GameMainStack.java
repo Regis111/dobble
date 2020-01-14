@@ -12,7 +12,6 @@ import java.util.List;
 @Component
 @Scope(value = "singleton")
 public class GameMainStack extends GameCardsStack {
-    private boolean initiated;
 
     @Autowired
     public GameMainStack() {
@@ -27,16 +26,14 @@ public class GameMainStack extends GameCardsStack {
     }
 
     private void initObject() {
-        initiated = false;
     }
 
     public boolean initMainStack(List<GameCard> cardsToAdd) {
-        if(initiated)
-            return false;
+        while(!isAllCardsPopped())
+            pop();
         for (GameCard curCard : cardsToAdd)
             if (!push(curCard))
                 return false;
-        initiated = true;
         return true;
     }
 

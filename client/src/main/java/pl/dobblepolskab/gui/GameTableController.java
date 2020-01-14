@@ -55,7 +55,7 @@ public class GameTableController {
     private final GameType type;
     private IntegerProperty score;
     private DifficultyLevel level;
-    private static int turnId = 0;
+    private int turnId = 1;
 
     // This field is used only in the singleplayer mode.
     private long duration;
@@ -73,16 +73,16 @@ public class GameTableController {
 
         switch (level) {
             case Easy:
-                duration = 8000;
+                duration = 10000;
                 break;
             case Medium:
-                duration = 5000;
+                duration = 7000;
                 break;
             case Hard:
-                duration = 3000;
+                duration = 5000;
                 break;
             case Expert:
-                duration = 2000;
+                duration = 4000;
                 break;
         }
     }
@@ -145,13 +145,13 @@ public class GameTableController {
             InitResponse response = (InitResponse) event.getResponse();
             System.out.println(response.getFirstCard() + " " + response.getSecondCard());
 
-            String[] leftCardImagePaths = gameContent.getGameCardSymbolPaths(response.getFirstCard());
+            String[] leftCardImagePaths = gameContent.getGameCardSymbolPaths(response.getFirstCard() + 1);
             DobbleImage[] leftCardImages = new DobbleImage[8];
             for (int i = 0; i < 8; i++) {
                 File f = new File(leftCardImagePaths[i]);
                 leftCardImages[i] = new DobbleImage(i + 1, "file:images/" + f.getName());
             }
-            String[] rightCardImagePaths = gameContent.getGameCardSymbolPaths(response.getSecondCard());
+            String[] rightCardImagePaths = gameContent.getGameCardSymbolPaths(response.getSecondCard() + 1);
             DobbleImage[] rightCardImages = new DobbleImage[8];
             for (int i = 0; i < 8; i++) {
                 File f = new File(rightCardImagePaths[i]);
@@ -168,7 +168,7 @@ public class GameTableController {
             AmIWinnerResponse response = (AmIWinnerResponse) event.getResponse();
             System.out.println(response.getCard());
 
-            String[] imagePaths = gameContent.getGameCardSymbolPaths(response.getCard());
+            String[] imagePaths = gameContent.getGameCardSymbolPaths(response.getCard() + 1);
             DobbleImage[] images = new DobbleImage[8];
             for (int i = 0; i < 8; i++) {
                 File f = new File(imagePaths[i]);

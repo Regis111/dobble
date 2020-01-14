@@ -4,9 +4,3 @@ allprojects {
     sourceCompatibility = 11
     targetCompatibility = 11
 }
-
-configure(subprojects.findAll {it.name != 'common'}) {
-    dependencies {
-        implementation project(':common')
-    }
-}

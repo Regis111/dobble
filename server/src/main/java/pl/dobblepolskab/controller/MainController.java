@@ -53,8 +53,6 @@ public class MainController {
      */
     @MessageMapping("/amIWinner")
     public void amIWinner(StompHeaderAccessor headers, String json) {
-        logger.info("In amIWinner method");
-
         AmIWinnerResponse request = null;
         try {
             request = new ObjectMapper().readValue(json, AmIWinnerResponse.class);
@@ -65,7 +63,7 @@ public class MainController {
         String clientID = request.getClientID();
         int shoutID = request.getShoutID();
 
-        logger.info("clientID {} shoutID {}", clientID, shoutID);
+        logger.info("In amIWinner method as clientID = {} on shoutID = {}", clientID, shoutID);
 
         if (!this.gameService.isWinner(clientID, shoutID)) {
             logger.info("Client: {} didn't win shout {}", clientID, shoutID);
@@ -110,6 +108,8 @@ public class MainController {
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
+
+        logger.info("In init method");
 
         this.configurationService.setComputerPlayersNumber(request.getComputerPlayersNumber());
         logger.info("Number of computer players set to {}", request.getComputerPlayersNumber());

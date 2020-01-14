@@ -86,19 +86,9 @@ public class ServerSDK {
             e.printStackTrace();
         }
     }
-/*
-    public static void main(String[] args) {
-        try {
-            ServerSDK sdk = new ServerSDK(new P(), "Ja");
-            Thread.sleep(3000);
-            sdk.addPlayer(sdk.stompSessionHandler.getClientID(), "Ja");
-            Thread.sleep(3000);
-            sdk.initSessionAsAdmin(sdk.stompSessionHandler.getClientID(), DifficultyLevel.Easy, 2);
-            //Thread.sleep(2000);
-            //sdk.askIfWonShout(sdk.stompSessionHandler.getClientID(), 1);
-            new Scanner(System.in).nextLine();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-    }*/
+
+    public void endGameSession() {
+        String payload = "";
+        session.send("/app/endSession", payload);
+    }
 }

@@ -88,7 +88,7 @@ public class ServerSDK {
     }
 
     public void endGameSession() {
-        String payload = "";
+        String payload = "payload";
         session.send("/app/endSession", payload);
     }
 }

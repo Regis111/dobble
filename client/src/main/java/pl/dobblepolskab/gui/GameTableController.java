@@ -251,6 +251,7 @@ public class GameTableController {
     private void backToMenu() {
         if (type == GameType.MULTIPLAYER) {
             server.deletePlayer(clientId, clientId);
+            server.endGameSession();
             server.getSession().disconnect();
         }
 

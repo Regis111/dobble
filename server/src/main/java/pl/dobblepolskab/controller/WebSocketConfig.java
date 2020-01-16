@@ -18,8 +18,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/dobble")
-                .setHandshakeHandler(new CustomHandshakeHandler()); // Set custom handshake handler
+        registry.addEndpoint("/dobble");
     }
 
 }

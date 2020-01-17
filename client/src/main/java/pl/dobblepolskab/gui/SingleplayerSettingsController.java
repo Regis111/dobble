@@ -2,7 +2,6 @@ package pl.dobblepolskab.gui;
 
 import gamecontent.DifficultyLevel;
 import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -41,7 +40,7 @@ public class SingleplayerSettingsController {
             button.prefWidthProperty().bind(width.multiply(0.3));
     }
 
-    public void difficultyLevelSelected(ActionEvent actionEvent) {
+    public void difficultyLevelSelected() {
         level = DifficultyLevel.valueOf((String) levelInput.getValue());
     }
 

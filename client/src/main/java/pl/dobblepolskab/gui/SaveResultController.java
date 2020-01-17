@@ -32,7 +32,12 @@ public class SaveResultController {
     private Button saveButton;
 
     private DifficultyLevel level;
-    private long score = 0;
+    private long score;
+
+    public SaveResultController(DifficultyLevel level, long score) {
+        this.level = level;
+        this.score = score;
+    }
 
     @FXML
     public void initialize() {
@@ -40,6 +45,7 @@ public class SaveResultController {
         ReadOnlyDoubleProperty height = scene.heightProperty();
 
         DoubleBinding fontSize = width.add(height).divide(40);
+        scoreDisplay.setText("Score: " + score);
         scoreDisplay.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString()));
 
         nameField.prefWidthProperty().bind(width.multiply(0.15));
@@ -69,14 +75,5 @@ public class SaveResultController {
         }
 
         scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "MainMenu.fxml"));
-    }
-
-    public void setDifficultyLevel(DifficultyLevel level) {
-        this.level = level;
-    }
-
-    public void setScore(long score) {
-        this.score = score;
-        scoreDisplay.setText("Score: " + score);
     }
 }

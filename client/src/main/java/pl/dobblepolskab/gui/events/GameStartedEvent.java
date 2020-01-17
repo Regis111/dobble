@@ -8,7 +8,8 @@ public class GameStartedEvent extends Event {
     public static final EventType<GameStartedEvent> SINGLEPLAYER_STARTED_EVENT_TYPE = new EventType<>("SingleplayerStartedEvent");
     public static final EventType<GameStartedEvent> MULTIPLAYER_STARTED_EVENT_TYPE = new EventType<>("MultiplayerStartedEvent");
 
-    private final DifficultyLevel level;
+    private DifficultyLevel level;
+    private int botsCount;
 
     public GameStartedEvent(EventType<? extends Event> eventType, DifficultyLevel level) {
         super(eventType);
@@ -16,7 +17,18 @@ public class GameStartedEvent extends Event {
         this.level = level;
     }
 
+    public GameStartedEvent(EventType<? extends Event> eventType, DifficultyLevel level, int botsCount) {
+        super(eventType);
+
+        this.level = level;
+        this.botsCount = botsCount;
+    }
+
     public DifficultyLevel getDifficultyLevel() {
         return level;
+    }
+
+    public int getBotsCount() {
+        return botsCount;
     }
 }

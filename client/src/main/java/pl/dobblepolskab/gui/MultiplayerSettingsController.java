@@ -1,10 +1,12 @@
 package pl.dobblepolskab.gui;
 
+import gamecontent.DifficultyLevel;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import pl.dobblepolskab.gui.events.GameStartedEvent;
 import pl.dobblepolskab.gui.events.SceneChangedEvent;
 
 import java.util.Arrays;
@@ -43,6 +45,11 @@ public class MultiplayerSettingsController {
     @FXML
     public void createGame() {
         scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "CreateGame.fxml"));
+    }
+
+    @FXML
+    public void joinGame() {
+        scene.getRoot().fireEvent(new GameStartedEvent(GameStartedEvent.MULTIPLAYER_STARTED_EVENT_TYPE, DifficultyLevel.Easy, -1));
     }
 
     @FXML

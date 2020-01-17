@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class DobbleCard extends Group {
-    private static final int IMAGES_COUNT = 8;
+    public static final int IMAGES_COUNT = 8;
 
     private DobbleImage[] images;
     private ImageView[] imageViews = new ImageView[IMAGES_COUNT];

@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -45,8 +46,11 @@ public class Main extends Application {
             primaryStage.setWidth(currentWidth + 6);
             primaryStage.setHeight(currentHeight + 32);
 
-            primaryStage.setScene(currentScene);
-            primaryStage.show();
+            // If we take out the 'runLater' function and execute normally, threading errors appear.
+            Platform.runLater(() -> {
+                primaryStage.setScene(currentScene);
+                primaryStage.show();
+            });
 
             if (settingHandlerNeeded) {
                 settingHandlerNeeded = false;
@@ -58,40 +62,54 @@ public class Main extends Application {
         }
     }
 
-    private void setSceneChangedHandlerCommon(SceneChangedEvent sceneChangedEvent) {
-        final String newSceneUrl = sceneChangedEvent.getNewSceneUrl();
-        loader = new FXMLLoader(getClass().getResource(newSceneUrl));
-
-        sceneChangedEvent.consume();
-        loadAndLayoutNewScene();
-    }
-
-    private void setGameStartedHandlerCommon(GameTableController controller) {
-        loader = new FXMLLoader(getClass().getResource("GameTable.fxml"));
-        loader.setController(controller);
-
-        loadAndLayoutNewScene();
-    }
-
     private void setHandlers() {
-        currentScene.getRoot().addEventHandler(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, this::setSceneChangedHandlerCommon);
-        currentScene.getRoot().addEventHandler(GameStartedEvent.SINGLEPLAYER_STARTED_EVENT_TYPE, event -> {
-            event.consume();
+        currentScene.getRoot().addEventHandler(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, e -> {
+            e.consume();
 
-            GameTableController controller = new GameTableController(GameType.SINGLEPLAYER, event.getDifficultyLevel());
-            setGameStartedHandlerCommon(controller);
-        });
-        currentScene.getRoot().addEventHandler(GameStartedEvent.MULTIPLAYER_STARTED_EVENT_TYPE, event -> {
-            event.consume();
+            final String newSceneUrl = e.getNewSceneUrl();
+            loader = new FXMLLoader(getClass().getResource(newSceneUrl));
 
-            GameTableController controller = new GameTableController(GameType.MULTIPLAYER, event.getDifficultyLevel());
-            setGameStartedHandlerCommon(controller);
+            loadAndLayoutNewScene();
         });
-        currentScene.getRoot().addEventHandler(SingleplayerEndedEvent.SINGLEPLAYER_ENDED_EVENT_TYPE, singleplayerEndedEvent -> {
-            setSceneChangedHandlerCommon(singleplayerEndedEvent);
-            SaveResultController controller = loader.getController();
-            controller.setDifficultyLevel(singleplayerEndedEvent.getDifficultyLevel());
-            controller.setScore(singleplayerEndedEvent.getScore());
+
+        currentScene.getRoot().addEventHandler(GameStartedEvent.SINGLEPLAYER_STARTED_EVENT_TYPE, e -> {
+            e.consume();
+
+            loader = new FXMLLoader(getClass().getResource("GameTable.fxml"));
+            GameTableController controller = new GameTableController(e.getDifficultyLevel());
+            loader.setController(controller);
+
+            loadAndLayoutNewScene();
+        });
+
+        currentScene.getRoot().addEventHandler(GameStartedEvent.MULTIPLAYER_STARTED_EVENT_TYPE, e -> {
+            e.consume();
+
+            loader = new FXMLLoader(getClass().getResource("LoadingMenu.fxml"));
+            LoadingMenuController controller = new LoadingMenuController(e.getDifficultyLevel(), e.getBotsCount());
+            loader.setController(controller);
+
+            loadAndLayoutNewScene();
+        });
+
+        currentScene.getRoot().addEventHandler(InitializationFinishedEvent.INITIALIZATION_FINISHED_EVENT_TYPE, e -> {
+            e.consume();
+
+            loader = new FXMLLoader(getClass().getResource("GameTable.fxml"));
+            GameTableController controller = new GameTableController(e.getConnection(), e.getCards(), e.isAdmin());
+            loader.setController(controller);
+
+            loadAndLayoutNewScene();
+        });
+
+        currentScene.getRoot().addEventHandler(SingleplayerEndedEvent.SINGLEPLAYER_ENDED_EVENT_TYPE, e -> {
+            e.consume();
+
+            loader = new FXMLLoader(getClass().getResource("SaveResult.fxml"));
+            SaveResultController controller = new SaveResultController(e.getDifficultyLevel(), e.getScore());
+            loader.setController(controller);
+
+            loadAndLayoutNewScene();
         });
 
         settingHandlerNeeded = true;

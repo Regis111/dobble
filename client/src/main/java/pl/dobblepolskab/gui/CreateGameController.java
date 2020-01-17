@@ -41,7 +41,7 @@ public class CreateGameController {
         vBox.spacingProperty().bind(height.divide(2.3));
 
         ObservableList<Integer> items = FXCollections.observableArrayList();
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 7; i++)
             items.add(i + 1);
         playersCount.setItems(items);
 
@@ -51,7 +51,7 @@ public class CreateGameController {
     }
 
     @FXML
-    public void playersCountSelected() {
+    public void botsCountSelected() {
         count = playersCount.getValue();
     }
 
@@ -61,12 +61,12 @@ public class CreateGameController {
     }
 
     @FXML
-    public void goBack() {
+    public void goBackToMenu() {
         scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "MultiplayerSettings.fxml"));
     }
 
     @FXML
     public void startTheGame() {
-        scene.getRoot().fireEvent(new GameStartedEvent(GameStartedEvent.MULTIPLAYER_STARTED_EVENT_TYPE, level));
+        scene.getRoot().fireEvent(new GameStartedEvent(GameStartedEvent.MULTIPLAYER_STARTED_EVENT_TYPE, level, count));
     }
 }

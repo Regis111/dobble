@@ -15,7 +15,6 @@ import org.springframework.messaging.simp.stomp.*;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 
-import java.util.Scanner;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -25,6 +24,7 @@ public class ServerSDK {
     private Logger logger = LoggerFactory.getLogger(ServerSDK.class);
     private StompSession session;
     private CustomStompSessionHandler stompSessionHandler;
+    private Parent gameObject;
 
     // The Parent object is by this class to issue messages to the GUI as a response to the messages from the server.
     public ServerSDK(Parent gameObject) throws ExecutionException, InterruptedException {
@@ -33,6 +33,7 @@ public class ServerSDK {
         this.stompSessionHandler = new CustomStompSessionHandler(UUID.randomUUID().toString(), gameObject);
         this.session = webSocketStompClient.connect(URL, stompSessionHandler).get();
         this.addPlayer(stompSessionHandler.getClientID(), "player" + stompSessionHandler.getClientID());
+        this.gameObject = gameObject;
     }
 
     public StompSession getSession() {
@@ -90,5 +91,9 @@ public class ServerSDK {
     public void endGameSession() {
         String payload = "payload";
         session.send("/app/endSession", payload);
+    }
+
+    public Parent getGameObject() {
+        return gameObject;
     }
 }

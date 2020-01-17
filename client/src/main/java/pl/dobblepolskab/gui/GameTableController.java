@@ -2,8 +2,6 @@ package pl.dobblepolskab.gui;
 
 import gamecontent.DifficultyLevel;
 import gamecontent.GameContent;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
@@ -15,28 +13,21 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import javafx.util.Duration;
 import messages.responses.AmIWinnerResponse;
-import messages.responses.InitResponse;
+import messages.responses.ResponseType;
+import pl.dobblepolskab.gui.events.SceneChangedEvent;
 import pl.dobblepolskab.gui.events.ServerRespondedEvent;
 import pl.dobblepolskab.gui.events.SingleplayerEndedEvent;
+import pl.dobblepolskab.gui.events.TimerFinishedEvent;
 import websocket.ServerSDK;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static java.lang.Thread.sleep;
 
 public class GameTableController {
     private static final double GAP = 10.0;
-    private static final int COUNTDOWN_END = -3600000;
-    private static final DateFormat TIME_FORMAT = new SimpleDateFormat("mm:ss" );
 
     @FXML
     private Scene scene;
@@ -49,27 +40,28 @@ public class GameTableController {
     @FXML
     private Text scoreDisplay;
     @FXML
-    private Text timeDisplay;
+    private Timer timeDisplay;
 
     // This fields are used in both singleplayer & multiplayer modes.
-    private final GameType type;
+    private GameType type;
     private IntegerProperty score;
-    private DifficultyLevel level;
-    private int turnId = 1;
 
     // This field is used only in the singleplayer mode.
+    private DifficultyLevel level;
     private long duration;
 
     // This fields are used only in the multiplayer mode.
-    private ServerSDK server;
+    private ServerSDK connection;
     private String clientId;
-    private GameContent gameContent = GameContent.getInstance();
+    private int[] initialCards;
+    private boolean isAdmin;
+    private int turnId;
 
-    public GameTableController(GameType type, DifficultyLevel level) {
-        this.type = type;
+    public GameTableController(DifficultyLevel level) {
+        this.type = GameType.SINGLEPLAYER;
         this.level = level;
         this.score = new SimpleIntegerProperty(0);
-        //this.turnId = 0;
+        this.isAdmin = false;
 
         switch (level) {
             case Easy:
@@ -87,141 +79,117 @@ public class GameTableController {
         }
     }
 
+    public GameTableController(ServerSDK connection, int[] cards, boolean isAdmin) {
+        this.type = GameType.MULTIPLAYER;
+        this.connection = connection;
+        this.clientId = connection.getStompSessionHandler().getClientID();
+        this.initialCards = cards;
+        this.isAdmin = isAdmin;
+        this.score = new SimpleIntegerProperty(0);
+        this.turnId = 1;
+
+    }
+
     @FXML
-    public void initialize() throws ExecutionException, InterruptedException {
-        /*
-         * The connection with the server has to be established here as the scene object is not yet initialized while
-         * in the constructor.
-         */
-        if (type == GameType.MULTIPLAYER)
-            initializeServerConnection();
-
-        layoutItems();
-
-        scene.getRoot().addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-            DobbleImage leftCardImage = leftCard.getHighlightedImage();
-            DobbleImage rightCardImage = rightCard.getHighlightedImage();
-
-            if (leftCardImage != null && rightCardImage != null) {
-                String leftCardImagePath = leftCardImage.getPath();
-                String rightCardImagePath = rightCardImage.getPath();
-                final boolean isCorrectPair = leftCardImagePath.equals(rightCardImagePath);
-                if (isCorrectPair && type == GameType.SINGLEPLAYER) {
-                    score.set(score.get() + 1);
-                    refresh();
-                } else if (isCorrectPair && type == GameType.MULTIPLAYER) {
-                    server.askIfWonShout(clientId, turnId);
-                    turnId++;
-                }
-            }
-        });
-
+    public void initialize() {
         if (type == GameType.SINGLEPLAYER)
-            setImages();
+            initializeSingleplayer();
+        else
+            initializeMultiplayer();
 
-        Timeline timeline = new Timeline();
-        KeyFrame frame = new KeyFrame(Duration.seconds(1), event -> {
-            try {
-                Date time = TIME_FORMAT.parse(timeDisplay.getText());
-                if (time.getTime() == COUNTDOWN_END) {
-                    timeline.stop();
-                    backToMenu();
-                }
-                time.setTime(time.getTime() - 1000); // 1000ms = 1s
-                timeDisplay.setText(TIME_FORMAT.format(time));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
+        timeDisplay.addEventHandler(TimerFinishedEvent.TIMER_FINISHED_EVENT_TYPE, e -> {
+            backToMenu();
         });
-        timeline.getKeyFrames().add(frame);
-        timeline.setCycleCount(Timeline.INDEFINITE);
-        timeline.play();
+        if (type == GameType.SINGLEPLAYER)
+            timeDisplay.run(duration);
+        else
+            timeDisplay.run(300000);
     }
 
-    private void initializeServerConnection() throws ExecutionException, InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(1);
+    private void initializeSingleplayer() {
+        //leftCard.setImages(loadRandomCard());
+        rightCard.setImages(loadRandomCard());
+        updateTableCard(loadRandomCard(), false);
 
-        scene.getRoot().addEventHandler(ServerRespondedEvent.INITIALIZATION_MESSAGE_EVENT_TYPE, event -> {
-            InitResponse response = (InitResponse) event.getResponse();
-            System.out.println(response.getFirstCard() + " " + response.getSecondCard());
-
-            String[] leftCardImagePaths = gameContent.getGameCardSymbolPaths(response.getFirstCard() + 1);
-            DobbleImage[] leftCardImages = new DobbleImage[8];
-            for (int i = 0; i < 8; i++) {
-                File f = new File(leftCardImagePaths[i]);
-                leftCardImages[i] = new DobbleImage(i + 1, "file:images/" + f.getName());
+        scene.getRoot().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (isCorrectPair()) {
+                score.set(score.get() + 1);
+                updateTableCard(loadRandomCard(), true);
+                timeDisplay.refresh();
             }
-            String[] rightCardImagePaths = gameContent.getGameCardSymbolPaths(response.getSecondCard() + 1);
-            DobbleImage[] rightCardImages = new DobbleImage[8];
-            for (int i = 0; i < 8; i++) {
-                File f = new File(rightCardImagePaths[i]);
-                rightCardImages[i] = new DobbleImage(i + 1, "file:images/" + f.getName());
-            }
-
-
-            leftCard.setImages(leftCardImages);
-            rightCard.setImages(rightCardImages);
-            latch.countDown();
         });
+    }
 
-        scene.getRoot().addEventHandler(ServerRespondedEvent.NEXT_TURN_STARTED_EVENT_TYPE, event -> {
+    private void initializeMultiplayer() {
+        connection.getGameObject().addEventHandler(ServerRespondedEvent.NEXT_TURN_STARTED_EVENT_TYPE, event -> {
             AmIWinnerResponse response = (AmIWinnerResponse) event.getResponse();
-            System.out.println(response.getCard());
 
-            String[] imagePaths = gameContent.getGameCardSymbolPaths(response.getCard() + 1);
-            DobbleImage[] images = new DobbleImage[8];
-            for (int i = 0; i < 8; i++) {
-                File f = new File(imagePaths[i]);
-                images[i] = new DobbleImage(i + 1, "file:images/" + f.getName());
-            }
+            final int newCardId = response.getCard() + 1;
 
-            Platform.runLater(() -> {
-                refresh();
-                leftCard.setImages(images);
-                layoutItems();
-                pane.getChildren().addAll(leftCard, rightCard);
-            });
+            final boolean shift = (response.getResponseType() == ResponseType.WIN);
+            if (shift)
+                score.set(score.get() + 1);
+
+            // If we take out the 'runLater' function and execute normally, threading errors appear.
+            Platform.runLater(() -> updateTableCard(loadImagesForCard(newCardId), shift));
         });
 
-        server = new ServerSDK(scene.getRoot());
-        this.clientId = server.getStompSessionHandler().getClientID();
-        server.initSessionAsAdmin(clientId, level, 2);
+        //leftCard.setImages(loadImagesForCard(initialCards[0]));
+        rightCard.setImages(loadImagesForCard(initialCards[1]));
+        updateTableCard(loadImagesForCard(initialCards[0]), false);
 
-        // Wait for initialization
-        latch.await();
+        scene.getRoot().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
+            if (isCorrectPair()) {
+                connection.askIfWonShout(clientId, turnId);
+                turnId++;
+            }
+        });
     }
 
-    private DobbleImage[] generateImages() {
-        //List<String> urls = Arrays.asList("file:images/1s.png", "file:images/16s.png", "file:images/21s.png");
-        final int c = ThreadLocalRandom.current().nextInt(1, 57);
-        String[] imagePaths = gameContent.getGameCardSymbolPaths(c);
-        DobbleImage[] images = new DobbleImage[8];
-        for (int i = 0; i < 8; i++) {
-            File f = new File(imagePaths[i]);
-            images[i] = new DobbleImage(i + 1, "file:images/" + f.getName());
+    private boolean isCorrectPair() {
+        DobbleImage leftCardImage = leftCard.getHighlightedImage();
+        DobbleImage rightCardImage = rightCard.getHighlightedImage();
+
+        if (leftCardImage != null && rightCardImage != null) {
+            String leftCardImagePath = leftCardImage.getPath();
+            String rightCardImagePath = rightCardImage.getPath();
+            return leftCardImagePath.equals(rightCardImagePath);
         }
+        return false;
+    }
+
+    private DobbleImage[] loadImagesForCard(final int cardId) {
+        final GameContent gameContent = GameContent.getInstance();
+
+        String[] paths = gameContent.getGameCardSymbolPaths(cardId);
+        DobbleImage[] images = new DobbleImage[DobbleCard.IMAGES_COUNT];
+        for (int i = 0; i < DobbleCard.IMAGES_COUNT; i++) {
+            final String name = new File(paths[i]).getName();
+            images[i] = new DobbleImage(i + 1, "file:images/" + name);
+        }
+
         return images;
     }
 
-    private void setImages() {
-        leftCard.setImages(generateImages());
-        rightCard.setImages(generateImages());
+    private DobbleImage[] loadRandomCard() {
+        final int rand = ThreadLocalRandom.current().nextInt(1, 57);
+        return loadImagesForCard(rand);
     }
 
-    private void refresh() {
+    // Shifts the cards to the right (the left card take place of the right one) and displays new left card.
+    private void updateTableCard(final DobbleImage[] newLeftCard, boolean shift) {
         pane.getChildren().removeAll(leftCard, rightCard);
         leftCard.removeHighlight();
+        rightCard.removeHighlight();
 
-        rightCard = leftCard;
+        if (shift)
+            rightCard = leftCard;
 
         leftCard = new DobbleCard();
-        if (type == GameType.SINGLEPLAYER) {
-            leftCard.setImages(generateImages());
+        leftCard.setImages(newLeftCard);
 
-            layoutItems();
-            setImages();
-            pane.getChildren().addAll(leftCard, rightCard);
-        }
+        layoutItems();
+        pane.getChildren().addAll(leftCard, rightCard);
     }
 
     private void layoutItems() {
@@ -244,17 +212,20 @@ public class GameTableController {
         scoreDisplay.textProperty().bind(Bindings.createStringBinding(() -> "Score: " + score.get(), score));
         scoreDisplay.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString()));
 
-        timeDisplay.setText(TIME_FORMAT.format(duration));
         timeDisplay.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString()));
     }
 
     private void backToMenu() {
-        if (type == GameType.MULTIPLAYER) {
-            server.deletePlayer(clientId, clientId);
-            server.endGameSession();
-            server.getSession().disconnect();
-        }
+        if (type == GameType.SINGLEPLAYER)
+            scene.getRoot().fireEvent(new SingleplayerEndedEvent(SingleplayerEndedEvent.SINGLEPLAYER_ENDED_EVENT_TYPE, "SaveResult.fxml", level, score.get()));
+        else {
+            connection.deletePlayer(clientId, clientId);
+            if (isAdmin) {
+                connection.endGameSession();
+            }
+            connection.getSession().disconnect();
 
-        scene.getRoot().fireEvent(new SingleplayerEndedEvent(SingleplayerEndedEvent.SINGLEPLAYER_ENDED_EVENT_TYPE, "SaveResult.fxml", level, score.get()));
+            scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "MainMenu.fxml"));
+        }
     }
 }

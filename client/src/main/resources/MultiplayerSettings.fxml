@@ -10,7 +10,7 @@
     <VBox fx:id="vBox" alignment="BOTTOM_CENTER" prefWidth="800" prefHeight="600">
         <VBox alignment="CENTER" spacing="10">
             <Button fx:id="createGame" onMouseClicked="#createGame" text="Create a Game"/>
-            <Button fx:id="joinGame" text="Join a Game"/>
+            <Button fx:id="joinGame" onMouseClicked="#joinGame" text="Join a Game"/>
         </VBox>
         <Button fx:id="goBack" onMouseClicked="#goBackToMenu" text="Go Back">
             <VBox.margin>

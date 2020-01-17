@@ -10,6 +10,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import pl.dobblepolskab.gui.events.SceneChangedEvent;
+import pl.dobblepolskab.gui.others.GameConstants;
+import pl.dobblepolskab.gui.others.LayoutConstants;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -44,13 +46,13 @@ public class SaveResultController {
         ReadOnlyDoubleProperty width = scene.widthProperty();
         ReadOnlyDoubleProperty height = scene.heightProperty();
 
-        DoubleBinding fontSize = width.add(height).divide(40);
+        DoubleBinding fontSize = width.add(height).divide(LayoutConstants.FONT_SIZE_MULTIPLIER);
         scoreDisplay.setText("Score: " + score);
         scoreDisplay.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString()));
 
-        nameField.prefWidthProperty().bind(width.multiply(0.15));
-        goBack.prefWidthProperty().bind(width.multiply(0.15));
-        saveButton.prefWidthProperty().bind(width.multiply(0.15));
+        nameField.prefWidthProperty().bind(width.multiply(LayoutConstants.MIDDLE_BUTTON_WIDTH_MULTIPLIER));
+        goBack.prefWidthProperty().bind(width.multiply(LayoutConstants.MIDDLE_BUTTON_WIDTH_MULTIPLIER));
+        saveButton.prefWidthProperty().bind(width.multiply(LayoutConstants.MIDDLE_BUTTON_WIDTH_MULTIPLIER));
     }
 
     @FXML
@@ -60,7 +62,7 @@ public class SaveResultController {
 
     @FXML
     public void saveResult() {
-        try (FileWriter fw = new FileWriter("RESULTS.TXT", true)) {
+        try (FileWriter fw = new FileWriter(GameConstants.RESULTS_FILE, true)) {
             BufferedWriter writer = new BufferedWriter(fw);
             DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             Date currentDate = new Date();

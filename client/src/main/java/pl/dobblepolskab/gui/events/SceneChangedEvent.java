@@ -1,6 +1,5 @@
 package pl.dobblepolskab.gui.events;
 
-
 import javafx.event.Event;
 import javafx.event.EventType;
 

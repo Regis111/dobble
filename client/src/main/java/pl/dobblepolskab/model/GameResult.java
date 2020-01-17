@@ -1,4 +1,4 @@
-package pl.dobblepolskab.gui.others;
+package pl.dobblepolskab.model;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;

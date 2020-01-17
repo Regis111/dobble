@@ -8,8 +8,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import pl.dobblepolskab.gui.others.GameResult;
+import pl.dobblepolskab.gui.others.GameConstants;
+import pl.dobblepolskab.model.GameResult;
 import pl.dobblepolskab.gui.events.SceneChangedEvent;
+import pl.dobblepolskab.gui.others.LayoutConstants;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -35,20 +37,20 @@ public class LeaderboardsController {
 
     @FXML
     public void initialize() {
-        goBack.prefWidthProperty().bind(scene.widthProperty().multiply(0.3));
+        goBack.prefWidthProperty().bind(scene.widthProperty().multiply(LayoutConstants.BOTTOM_BUTTON_WIDTH_MULTIPLIER));
 
         dateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         levelColumn.setCellValueFactory(new PropertyValueFactory<>("level"));
         scoreColumn.setCellValueFactory(new PropertyValueFactory<>("score"));
 
-        table.setItems(readGameResults("RESULTS.TXT"));
+        table.setItems(readGameResults());
     }
 
-    private ObservableList<GameResult> readGameResults(String filePath) {
+    private ObservableList<GameResult> readGameResults() {
         ObservableList<GameResult> results = FXCollections.observableArrayList();
 
-        try (FileReader fr = new FileReader(filePath)) {
+        try (FileReader fr = new FileReader(GameConstants.RESULTS_FILE)) {
             BufferedReader reader = new BufferedReader(fr);
 
             String line = reader.readLine();

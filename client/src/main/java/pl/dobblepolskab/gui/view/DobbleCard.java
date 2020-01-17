@@ -1,4 +1,4 @@
-package pl.dobblepolskab.gui;
+package pl.dobblepolskab.gui.view;
 
 import javafx.application.Platform;
 import javafx.beans.property.DoubleProperty;
@@ -8,20 +8,20 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import pl.dobblepolskab.gui.others.GameConstants;
 
 public class DobbleCard extends Group {
-    public static final int IMAGES_COUNT = 8;
 
     private DobbleImage[] images;
-    private ImageView[] imageViews = new ImageView[IMAGES_COUNT];
+    private ImageView[] imageViews = new ImageView[GameConstants.DISPLAYED_IMAGES_COUNT];
     private DobbleImage highlightedImage;
 
     private Circle circle = new Circle(0, Color.WHITE);
     private DobbleCardLayout layout = new DobbleSquareLayout(this);
 
     public void setImages(DobbleImage[] images) {
-        if (images == null || images.length != IMAGES_COUNT)
-            throw new IllegalArgumentException("A card should contain " + IMAGES_COUNT + " images");
+        if (images == null || images.length != GameConstants.DISPLAYED_IMAGES_COUNT)
+            throw new IllegalArgumentException("A card should contain " + GameConstants.DISPLAYED_IMAGES_COUNT + " images");
         this.images = images;
 
         highlightedImage = null;
@@ -38,7 +38,7 @@ public class DobbleCard extends Group {
             }
         };
 
-        for (int i = 0; i < IMAGES_COUNT; i++) {
+        for (int i = 0; i < GameConstants.DISPLAYED_IMAGES_COUNT; i++) {
             imageViews[i] = new ImageView(images[i]);
             imageViews[i].addEventHandler(MouseEvent.MOUSE_CLICKED, handler);
         }

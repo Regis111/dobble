@@ -1,16 +1,18 @@
-package pl.dobblepolskab.gui;
+package pl.dobblepolskab.gui.view;
 
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.property.DoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Rectangle;
+import pl.dobblepolskab.gui.others.GameConstants;
+import pl.dobblepolskab.gui.others.LayoutConstants;
 
 public class DobbleSquareLayout implements DobbleCardLayout {
-    private Rectangle[] rectangles = new Rectangle[8];
+    private Rectangle[] rectangles = new Rectangle[GameConstants.DISPLAYED_IMAGES_COUNT];
 
     public DobbleSquareLayout(DobbleCard card) {
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < GameConstants.DISPLAYED_IMAGES_COUNT; i++)
             rectangles[i] = new Rectangle();
 
         DoubleProperty centerX = card.getCenterXProperty();
@@ -33,7 +35,7 @@ public class DobbleSquareLayout implements DobbleCardLayout {
         rectangles[3].xProperty().bind(centerX);
         rectangles[3].yProperty().bind(centerY);
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < GameConstants.DISPLAYED_IMAGES_COUNT / 2; i++) {
             rectangles[i].heightProperty().bind(squareShift);
             rectangles[i].widthProperty().bind(squareShift);
         }
@@ -67,7 +69,7 @@ public class DobbleSquareLayout implements DobbleCardLayout {
 
     @Override
     public void layoutImages(ImageView[] imageViews) {
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < GameConstants.DISPLAYED_IMAGES_COUNT; i++)
             layoutImageInsideRectangle(rectangles[i], imageViews[i]);
     }
 
@@ -114,8 +116,8 @@ public class DobbleSquareLayout implements DobbleCardLayout {
         imageView.setPreserveRatio(true);
 
         // Bind the height and the width of the image
-        DoubleBinding heightBinding = rectangle.heightProperty().multiply(0.8);
-        DoubleBinding widthBinding = rectangle.widthProperty().multiply(0.8);
+        DoubleBinding heightBinding = rectangle.heightProperty().multiply(LayoutConstants.RECTANGLE_SIZE_MULTIPLIER);
+        DoubleBinding widthBinding = rectangle.widthProperty().multiply(LayoutConstants.RECTANGLE_SIZE_MULTIPLIER);
 
         imageView.fitHeightProperty().bind(heightBinding);
         imageView.fitWidthProperty().bind(widthBinding);

@@ -9,11 +9,13 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.layout.VBox;
 import pl.dobblepolskab.gui.events.GameStartedEvent;
 import pl.dobblepolskab.gui.events.SceneChangedEvent;
+import pl.dobblepolskab.gui.others.LayoutConstants;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class SingleplayerSettingsController {
+    private static final double CENTRAL_ITEMS_POSITION_MULTIPLIER = 2.3;
 
     @FXML
     private Scene scene;
@@ -33,11 +35,11 @@ public class SingleplayerSettingsController {
         ReadOnlyDoubleProperty width = scene.widthProperty();
         ReadOnlyDoubleProperty height = scene.heightProperty();
 
-        vBox.spacingProperty().bind(height.divide(2.3));
+        vBox.spacingProperty().bind(height.divide(CENTRAL_ITEMS_POSITION_MULTIPLIER));
 
         List<Button> buttons = Arrays.asList(goBack, play);
         for (Button button : buttons)
-            button.prefWidthProperty().bind(width.multiply(0.3));
+            button.prefWidthProperty().bind(width.multiply(LayoutConstants.BOTTOM_BUTTON_WIDTH_MULTIPLIER));
     }
 
     public void difficultyLevelSelected() {

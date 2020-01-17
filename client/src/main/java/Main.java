@@ -8,6 +8,7 @@ import pl.dobblepolskab.gui.controllers.GameTableController;
 import pl.dobblepolskab.gui.controllers.LoadingMenuController;
 import pl.dobblepolskab.gui.controllers.SaveResultController;
 import pl.dobblepolskab.gui.events.*;
+import websocket.ServerSDK;
 
 import java.io.IOException;
 
@@ -17,7 +18,11 @@ public class Main extends Application {
 
     private FXMLLoader loader;
     private boolean settingHandlerNeeded = true;
+
+    // Multiplayer game settings.
+    private ServerSDK connection;
     private int gameDuration;
+    private boolean isAdmin;
 
     public static void main(String[] args) {
         launch(args);
@@ -32,13 +37,14 @@ public class Main extends Application {
         primaryStage.setScene(currentScene);
         primaryStage.show();
 
-        setHandlers();
-
+        // Makes sure the client (if connected) disconnects before leaving the game.
         primaryStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, e -> {
             if (loader.getController() instanceof GameTableController)
                 ((GameTableController) loader.getController()).endTheGame();
             Platform.exit();
         });
+
+        setHandlers();
     }
 
     private void loadAndLayoutNewScene() {
@@ -106,7 +112,9 @@ public class Main extends Application {
             e.consume();
 
             loader = new FXMLLoader(getClass().getResource("GameTable.fxml"));
-            GameTableController controller = new GameTableController(e.getConnection(), e.getCards(), e.isAdmin(), gameDuration);
+            GameTableController controller = new GameTableController(e.getConnection(), e.getCards(), gameDuration);
+            this.connection = e.getConnection();
+            this.isAdmin = e.isAdmin();
             loader.setController(controller);
 
             loadAndLayoutNewScene();
@@ -118,6 +126,20 @@ public class Main extends Application {
             loader = new FXMLLoader(getClass().getResource("SaveResult.fxml"));
             SaveResultController controller = new SaveResultController(e.getDifficultyLevel(), e.getScore());
             loader.setController(controller);
+
+            loadAndLayoutNewScene();
+        });
+
+        currentScene.getRoot().addEventHandler(MultiplayerEndedEvent.MULTIPLAYER_ENDED_EVENT_TYPE, e -> {
+            e.consume();
+
+            final String clientId = connection.getStompSessionHandler().getClientID();
+            connection.deletePlayer(clientId, clientId);
+            if (isAdmin)
+                connection.endGameSession();
+            connection.getSession().disconnect();
+
+            loader = new FXMLLoader(getClass().getResource("MainMenu.fxml"));
 
             loadAndLayoutNewScene();
         });

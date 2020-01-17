@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import messages.responses.InitResponse;
+import pl.dobblepolskab.gui.others.LayoutConstants;
 import pl.dobblepolskab.gui.others.Timer;
 import pl.dobblepolskab.gui.events.InitializationFinishedEvent;
 import pl.dobblepolskab.gui.events.SceneChangedEvent;
@@ -19,6 +20,8 @@ import websocket.ServerSDK;
 import java.util.concurrent.ExecutionException;
 
 public class LoadingMenuController {
+    private static final double CENTRAL_ITEMS_POSITION_MULTIPLIER = 2.6;
+    private static final int WAITING_TIME_SECONDS = 30;
 
     @FXML
     private Scene scene;
@@ -48,9 +51,9 @@ public class LoadingMenuController {
         ReadOnlyDoubleProperty width = scene.widthProperty();
         ReadOnlyDoubleProperty height = scene.heightProperty();
 
-        vBox.spacingProperty().bind(height.divide(2.6));
+        vBox.spacingProperty().bind(height.divide(CENTRAL_ITEMS_POSITION_MULTIPLIER));
 
-        DoubleBinding fontSize = width.add(height).divide(40);
+        DoubleBinding fontSize = width.add(height).divide(LayoutConstants.FONT_SIZE_MULTIPLIER);
         timeDisplay.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString()));
         messageDisplay.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString()));
     }
@@ -61,7 +64,7 @@ public class LoadingMenuController {
             if (!isInitialized)
                 goBackToMenu();
         });
-        timeDisplay.run(30000);
+        timeDisplay.run(WAITING_TIME_SECONDS);
     }
 
     private void establishConnection() throws ExecutionException, InterruptedException {

@@ -1,7 +1,6 @@
 package pl.dobblepolskab.gui.controllers;
 
 import gamecontent.DifficultyLevel;
-import gamecontent.GameContent;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleBinding;
@@ -13,25 +12,18 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
-import javafx.stage.WindowEvent;
 import messages.responses.AmIWinnerResponse;
 import messages.responses.ResponseType;
-import pl.dobblepolskab.gui.DobbleCard;
-import pl.dobblepolskab.gui.DobbleImage;
-import pl.dobblepolskab.gui.others.GameType;
+import pl.dobblepolskab.gui.events.*;
+import pl.dobblepolskab.gui.others.CardImagesLoader;
+import pl.dobblepolskab.gui.view.DobbleCard;
+import pl.dobblepolskab.gui.view.DobbleImage;
+import pl.dobblepolskab.model.GameType;
+import pl.dobblepolskab.gui.others.LayoutConstants;
 import pl.dobblepolskab.gui.others.Timer;
-import pl.dobblepolskab.gui.events.SceneChangedEvent;
-import pl.dobblepolskab.gui.events.ServerRespondedEvent;
-import pl.dobblepolskab.gui.events.SingleplayerEndedEvent;
-import pl.dobblepolskab.gui.events.TimerFinishedEvent;
 import websocket.ServerSDK;
 
-import java.io.File;
-import java.util.concurrent.ThreadLocalRandom;
-
 public class GameTableController {
-    private static final double GAP = 10.0;
-    private static final int IMAGES_COUNT = 57;
 
     @FXML
     private Scene scene;
@@ -49,49 +41,33 @@ public class GameTableController {
     // This fields are used in both singleplayer & multiplayer modes.
     private GameType type;
     private IntegerProperty score;
+    private final CardImagesLoader loader = CardImagesLoader.getInstance();
 
     // This field is used only in the singleplayer mode.
     private DifficultyLevel level;
-    private long duration;
+    private int duration;
 
     // This fields are used only in the multiplayer mode.
     private ServerSDK connection;
     private String clientId;
     private int[] initialCards;
-    private boolean isAdmin;
     private int turnId;
 
     public GameTableController(DifficultyLevel level) {
         this.type = GameType.SINGLEPLAYER;
         this.level = level;
         this.score = new SimpleIntegerProperty(0);
-        this.isAdmin = false;
-
-        switch (level) {
-            case Easy:
-                duration = 10000;
-                break;
-            case Medium:
-                duration = 7000;
-                break;
-            case Hard:
-                duration = 5000;
-                break;
-            case Expert:
-                duration = 4000;
-                break;
-        }
+        this.duration = level.getGameTimeInSeconds();
     }
 
-    public GameTableController(ServerSDK connection, int[] cards, boolean isAdmin, int gameDuration) {
+    public GameTableController(ServerSDK connection, int[] cards, int gameDuration) {
         this.type = GameType.MULTIPLAYER;
         this.connection = connection;
         this.clientId = connection.getStompSessionHandler().getClientID();
         this.initialCards = cards;
-        this.isAdmin = isAdmin;
         this.score = new SimpleIntegerProperty(0);
         this.turnId = 1;
-        this.duration = gameDuration * 60 * 1000; // Conversion to milliseconds
+        this.duration = gameDuration * 60; // Conversion to seconds
     }
 
     @FXML
@@ -113,15 +89,15 @@ public class GameTableController {
     }
 
     private void initializeSingleplayer() {
-        rightCard.setImages(loadRandomCard());
-        updateTableCard(loadRandomCard(), false);
+        rightCard.setImages(loader.loadRandomCard());
+        updateTableCard(loader.loadRandomCard(), false);
 
         scene.getRoot().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             e.consume();
 
             if (isCorrectPair()) {
                 score.set(score.get() + 1);
-                updateTableCard(loadRandomCard(), true);
+                updateTableCard(loader.loadRandomCard(), true);
                 timeDisplay.refresh();
             }
         });
@@ -140,11 +116,11 @@ public class GameTableController {
                 score.set(score.get() + 1);
 
             // If we take out the 'runLater' function and execute normally, threading errors appear.
-            Platform.runLater(() -> updateTableCard(loadImagesForCard(newCardId), shift));
+            Platform.runLater(() -> updateTableCard(loader.loadImagesForCard(newCardId), shift));
         });
 
-        rightCard.setImages(loadImagesForCard(initialCards[1]));
-        updateTableCard(loadImagesForCard(initialCards[0]), false);
+        rightCard.setImages(loader.loadImagesForCard(initialCards[1]));
+        updateTableCard(loader.loadImagesForCard(initialCards[0]), false);
 
         scene.getRoot().addEventHandler(MouseEvent.MOUSE_CLICKED, e -> {
             e.consume();
@@ -168,26 +144,8 @@ public class GameTableController {
         return false;
     }
 
-    private DobbleImage[] loadImagesForCard(final int cardId) {
-        final GameContent gameContent = GameContent.getInstance();
-
-        String[] paths = gameContent.getGameCardSymbolPaths(cardId);
-        DobbleImage[] images = new DobbleImage[DobbleCard.IMAGES_COUNT];
-        for (int i = 0; i < DobbleCard.IMAGES_COUNT; i++) {
-            final String name = new File(paths[i]).getName();
-            images[i] = new DobbleImage(i + 1, "file:images/" + name);
-        }
-
-        return images;
-    }
-
-    private DobbleImage[] loadRandomCard() {
-        final int rand = ThreadLocalRandom.current().nextInt(1, IMAGES_COUNT);
-        return loadImagesForCard(rand);
-    }
-
     // Shifts the cards to the right (the left card take place of the right one) and displays new left card.
-    private void updateTableCard(final DobbleImage[] newLeftCard, boolean shift) {
+    private void updateTableCard(DobbleImage[] newLeftCard, boolean shift) {
         pane.getChildren().removeAll(leftCard, rightCard);
         leftCard.removeHighlight();
         rightCard.removeHighlight();
@@ -207,17 +165,17 @@ public class GameTableController {
         ReadOnlyDoubleProperty height = scene.heightProperty();
 
         DoubleBinding cardHeight = scene.heightProperty().divide(2);
-        DoubleBinding cardRadius = scene.widthProperty().subtract(GAP * 4).divide(4);
+        DoubleBinding cardRadius = scene.widthProperty().subtract(LayoutConstants.ITEMS_GAP * 4).divide(4);
 
         leftCard.getRadiusProperty().bind(cardRadius);
-        leftCard.getCenterXProperty().bind(cardRadius.add(GAP));
+        leftCard.getCenterXProperty().bind(cardRadius.add(LayoutConstants.ITEMS_GAP));
         leftCard.getCenterYProperty().bind(cardHeight);
 
         rightCard.getRadiusProperty().bind(cardRadius);
-        rightCard.getCenterXProperty().bind(width.subtract(cardRadius).subtract(GAP));
+        rightCard.getCenterXProperty().bind(width.subtract(cardRadius).subtract(LayoutConstants.ITEMS_GAP));
         rightCard.getCenterYProperty().bind(cardHeight);
 
-        DoubleBinding fontSize = width.add(height).divide(40);
+        DoubleBinding fontSize = width.add(height).divide(LayoutConstants.FONT_SIZE_MULTIPLIER);
 
         scoreDisplay.textProperty().bind(Bindings.createStringBinding(() -> "Score: " + score.get(), score));
         scoreDisplay.styleProperty().bind(Bindings.concat("-fx-font-size: ", fontSize.asString()));
@@ -227,15 +185,8 @@ public class GameTableController {
 
     public void endTheGame() {
         if (type == GameType.SINGLEPLAYER)
-            scene.getRoot().fireEvent(new SingleplayerEndedEvent(SingleplayerEndedEvent.SINGLEPLAYER_ENDED_EVENT_TYPE, "SaveResult.fxml", level, score.get()));
-        else {
-            connection.deletePlayer(clientId, clientId);
-            if (isAdmin) {
-                connection.endGameSession();
-            }
-            connection.getSession().disconnect();
-
-            scene.getRoot().fireEvent(new SceneChangedEvent(SceneChangedEvent.SCENE_CHANGED_EVENT_TYPE, "MainMenu.fxml"));
-        }
+            scene.getRoot().fireEvent(new SingleplayerEndedEvent(SingleplayerEndedEvent.SINGLEPLAYER_ENDED_EVENT_TYPE, level, score.get()));
+        else
+            scene.getRoot().fireEvent(new MultiplayerEndedEvent(MultiplayerEndedEvent.MULTIPLAYER_ENDED_EVENT_TYPE));
     }
 }

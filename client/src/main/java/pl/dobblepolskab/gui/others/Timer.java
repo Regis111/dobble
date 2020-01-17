@@ -12,19 +12,21 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 public class Timer extends Text {
-    private static final long DISPLAY_OFFSET = 1000;
+    private static final int DISPLAY_OFFSET = 1;
+    private static final int SECS_TO_MS = 1000;
 
     private DateFormat displayFormat;
-    private long startingTime;
-    private long time;
+    private int startingTime;
+    private int time;
 
     public Timer(@NamedArg("format") String format) {
         this.displayFormat = new SimpleDateFormat(format);
     }
 
-    public void run(long startingTime) {
-        this.startingTime = startingTime + DISPLAY_OFFSET;
-        this.time = startingTime + DISPLAY_OFFSET;
+    public void run(int startingTime) {
+        this.time = (startingTime + DISPLAY_OFFSET) * SECS_TO_MS;
+        this.startingTime = time;
+
         setText(displayFormat.format(time));
 
         Timeline timeline = new Timeline();
@@ -32,9 +34,10 @@ public class Timer extends Text {
             if (time <= 0) {
                 timeline.stop();
                 fireEvent(new TimerFinishedEvent(TimerFinishedEvent.TIMER_FINISHED_EVENT_TYPE));
+            } else {
+                time--;
+                setText(displayFormat.format(time));
             }
-            time--;
-            setText(displayFormat.format(time));
         });
 
         timeline.getKeyFrames().add(frame);

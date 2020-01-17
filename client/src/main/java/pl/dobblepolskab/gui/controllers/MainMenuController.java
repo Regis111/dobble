@@ -6,11 +6,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import pl.dobblepolskab.gui.events.SceneChangedEvent;
+import pl.dobblepolskab.gui.others.LayoutConstants;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class MainMenuController {
+    private static final double LOGO_WIDTH_MULTIPLIER = 0.7;
 
     @FXML
     private Scene scene;
@@ -32,12 +34,12 @@ public class MainMenuController {
         ReadOnlyDoubleProperty width = scene.widthProperty();
         ReadOnlyDoubleProperty height = scene.heightProperty();
 
-        logo.fitWidthProperty().bind(width.multiply(0.7));
+        logo.fitWidthProperty().bind(width.multiply(LOGO_WIDTH_MULTIPLIER));
 
         List<Button> buttons = Arrays.asList(singleplayer, multiplayer, leaderboards, settings, exit);
         for (Button button : buttons) {
-            button.prefWidthProperty().bind(width.multiply(0.3));
-            button.prefHeightProperty().bind(height.multiply(0.07));
+            button.prefWidthProperty().bind(width.multiply(LayoutConstants.BOTTOM_BUTTON_WIDTH_MULTIPLIER));
+            button.prefHeightProperty().bind(height.multiply(LayoutConstants.BUTTON_HEIGHT_MULTIPLIER));
         }
     }
 

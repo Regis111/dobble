@@ -8,12 +8,14 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import pl.dobblepolskab.gui.events.GameStartedEvent;
 import pl.dobblepolskab.gui.events.SceneChangedEvent;
+import pl.dobblepolskab.gui.others.LayoutConstants;
 
 import java.util.Arrays;
 import java.util.List;
 
 
 public class MultiplayerSettingsController {
+    private static final double CENTRAL_ITEMS_POSITION_MULTIPLIER = 2.6;
 
     @FXML
     private Scene scene;
@@ -31,15 +33,15 @@ public class MultiplayerSettingsController {
         ReadOnlyDoubleProperty width = scene.widthProperty();
         ReadOnlyDoubleProperty height = scene.heightProperty();
 
-        vBox.spacingProperty().bind(height.divide(2.6));
+        vBox.spacingProperty().bind(height.divide(CENTRAL_ITEMS_POSITION_MULTIPLIER));
 
         List<Button> buttons = Arrays.asList(createGame, joinGame);
         for (Button button : buttons) {
-            button.prefWidthProperty().bind(width.multiply(0.3));
-            button.prefHeightProperty().bind(height.multiply(0.07));
+            button.prefWidthProperty().bind(width.multiply(LayoutConstants.BOTTOM_BUTTON_WIDTH_MULTIPLIER));
+            button.prefHeightProperty().bind(height.multiply(LayoutConstants.BUTTON_HEIGHT_MULTIPLIER));
         }
 
-        goBack.prefWidthProperty().bind(width.multiply(0.3));
+        goBack.prefWidthProperty().bind(width.multiply(LayoutConstants.BOTTOM_BUTTON_WIDTH_MULTIPLIER));
     }
 
     @FXML

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.*?>
-<?import pl.dobblepolskab.gui.DobbleCard?>
+<?import pl.dobblepolskab.gui.view.DobbleCard?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.layout.VBox?>

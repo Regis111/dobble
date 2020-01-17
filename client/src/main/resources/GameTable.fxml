@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.layout.VBox?>
-<?import pl.dobblepolskab.gui.Timer?>
+<?import pl.dobblepolskab.gui.others.Timer?>
 
 <Scene fx:id="scene" xmlns:fx="http://javafx.com/fxml/1" width="800" height="600">
     <Pane fx:id="pane" style="-fx-background-color: lightgreen">

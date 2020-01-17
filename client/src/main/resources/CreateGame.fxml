@@ -1,30 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.*?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
-
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.collections.FXCollections?>
 <?import java.lang.String?>
-<Scene fx:controller="pl.dobblepolskab.gui.CreateGameController" fx:id="scene"
+<?import javafx.scene.control.*?>
+
+<Scene fx:controller="pl.dobblepolskab.gui.controllers.CreateGameController" fx:id="scene"
        xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" width="800.0" height="600.0">
     <VBox fx:id="vBox" alignment="BOTTOM_CENTER" prefWidth="${scene.width}" prefHeight="${scene.height}">
-        <HBox alignment="CENTER" spacing="10">
-            <ComboBox fx:id="playersCount" onAction="#botsCountSelected" promptText="Number of Computer Players"/>
-            <ComboBox fx:id="levelInput" onAction="#difficultyLevelSelected" promptText="Difficulty Level">
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="Easy" />
-                        <String fx:value="Medium" />
-                        <String fx:value="Hard" />
-                        <String fx:value="Expert" />
-                    </FXCollections>
-                </items>
-            </ComboBox>
-        </HBox>
+        <VBox alignment="CENTER" spacing="10">
+            <HBox alignment="CENTER" spacing="10">
+                <ComboBox fx:id="playersCount" onAction="#botsCountSelected" promptText="Number of Computer Players"/>
+                <ComboBox fx:id="levelInput" onAction="#difficultyLevelSelected" promptText="Difficulty Level">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Easy" />
+                            <String fx:value="Medium" />
+                            <String fx:value="Hard" />
+                            <String fx:value="Expert" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </HBox>
+            <HBox alignment="CENTER" spacing="10">
+                <Label text="Duration of the game [min]:"/>
+                <Spinner fx:id="timeInput">
+                    <valueFactory>
+                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="5" max="20"/>
+                    </valueFactory>
+                </Spinner>
+            </HBox>
+        </VBox>
         <HBox alignment="CENTER" spacing="10">
             <Button fx:id="goBack" onMouseClicked="#goBackToMenu" text="Go Back" />
             <Button fx:id="play" onMouseClicked="#startTheGame" text="Play" />

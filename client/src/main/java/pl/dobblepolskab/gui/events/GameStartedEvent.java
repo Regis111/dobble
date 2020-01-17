@@ -10,6 +10,7 @@ public class GameStartedEvent extends Event {
 
     private DifficultyLevel level;
     private int botsCount;
+    private int duration;
 
     public GameStartedEvent(EventType<? extends Event> eventType, DifficultyLevel level) {
         super(eventType);
@@ -17,11 +18,12 @@ public class GameStartedEvent extends Event {
         this.level = level;
     }
 
-    public GameStartedEvent(EventType<? extends Event> eventType, DifficultyLevel level, int botsCount) {
+    public GameStartedEvent(EventType<? extends Event> eventType, DifficultyLevel level, int botsCount, int duration) {
         super(eventType);
 
         this.level = level;
         this.botsCount = botsCount;
+        this.duration = duration;
     }
 
     public DifficultyLevel getDifficultyLevel() {
@@ -30,5 +32,9 @@ public class GameStartedEvent extends Event {
 
     public int getBotsCount() {
         return botsCount;
+    }
+
+    public int getDuration() {
+        return duration;
     }
 }

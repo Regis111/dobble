@@ -1,4 +1,4 @@
-package pl.dobblepolskab.gui;
+package pl.dobblepolskab.gui.controllers;
 
 import gamecontent.DifficultyLevel;
 import javafx.beans.binding.Bindings;
@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import messages.responses.InitResponse;
+import pl.dobblepolskab.gui.others.Timer;
 import pl.dobblepolskab.gui.events.InitializationFinishedEvent;
 import pl.dobblepolskab.gui.events.SceneChangedEvent;
 import pl.dobblepolskab.gui.events.ServerRespondedEvent;

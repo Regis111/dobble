@@ -1,4 +1,4 @@
-package pl.dobblepolskab.gui;
+package pl.dobblepolskab.gui.others;
 
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -9,7 +9,7 @@ public class GameResult {
     private SimpleStringProperty level;
     private SimpleIntegerProperty score;
 
-    GameResult(String date, String name, String level, int score) {
+    public GameResult(String date, String name, String level, int score) {
         this.date = new SimpleStringProperty(date);
         this.name = new SimpleStringProperty(name);
         this.level = new SimpleStringProperty(level);

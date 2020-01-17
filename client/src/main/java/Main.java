@@ -3,7 +3,10 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import pl.dobblepolskab.gui.*;
+import javafx.stage.WindowEvent;
+import pl.dobblepolskab.gui.controllers.GameTableController;
+import pl.dobblepolskab.gui.controllers.LoadingMenuController;
+import pl.dobblepolskab.gui.controllers.SaveResultController;
 import pl.dobblepolskab.gui.events.*;
 
 import java.io.IOException;
@@ -14,6 +17,7 @@ public class Main extends Application {
 
     private FXMLLoader loader;
     private boolean settingHandlerNeeded = true;
+    private int gameDuration;
 
     public static void main(String[] args) {
         launch(args);
@@ -29,6 +33,12 @@ public class Main extends Application {
         primaryStage.show();
 
         setHandlers();
+
+        primaryStage.getScene().getWindow().addEventFilter(WindowEvent.WINDOW_CLOSE_REQUEST, e -> {
+            if (loader.getController() instanceof GameTableController)
+                ((GameTableController) loader.getController()).endTheGame();
+            Platform.exit();
+        });
     }
 
     private void loadAndLayoutNewScene() {
@@ -78,7 +88,6 @@ public class Main extends Application {
             loader = new FXMLLoader(getClass().getResource("GameTable.fxml"));
             GameTableController controller = new GameTableController(e.getDifficultyLevel());
             loader.setController(controller);
-
             loadAndLayoutNewScene();
         });
 
@@ -87,6 +96,7 @@ public class Main extends Application {
 
             loader = new FXMLLoader(getClass().getResource("LoadingMenu.fxml"));
             LoadingMenuController controller = new LoadingMenuController(e.getDifficultyLevel(), e.getBotsCount());
+            this.gameDuration = e.getDuration();
             loader.setController(controller);
 
             loadAndLayoutNewScene();
@@ -96,7 +106,7 @@ public class Main extends Application {
             e.consume();
 
             loader = new FXMLLoader(getClass().getResource("GameTable.fxml"));
-            GameTableController controller = new GameTableController(e.getConnection(), e.getCards(), e.isAdmin());
+            GameTableController controller = new GameTableController(e.getConnection(), e.getCards(), e.isAdmin(), gameDuration);
             loader.setController(controller);
 
             loadAndLayoutNewScene();

@@ -9,7 +9,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.layout.VBox?>
 
-<Scene fx:controller="pl.dobblepolskab.gui.SingleplayerSettingsController" fx:id="scene"
+<Scene fx:controller="pl.dobblepolskab.gui.controllers.SingleplayerSettingsController" fx:id="scene"
        xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" width="800" height="600">
     <VBox fx:id="vBox" alignment="BOTTOM_CENTER" prefWidth="800" prefHeight="600">
          <ComboBox fx:id="levelInput" onAction="#difficultyLevelSelected" promptText="Difficulty Level">

@@ -1,4 +1,4 @@
-package pl.dobblepolskab.gui;
+package pl.dobblepolskab.gui.controllers;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import pl.dobblepolskab.gui.others.GameResult;
 import pl.dobblepolskab.gui.events.SceneChangedEvent;
 
 import java.io.BufferedReader;

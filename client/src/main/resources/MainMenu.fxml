@@ -7,7 +7,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
 
-<Scene fx:controller="pl.dobblepolskab.gui.MainMenuController" fx:id="scene"
+<Scene fx:controller="pl.dobblepolskab.gui.controllers.MainMenuController" fx:id="scene"
        xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" width="800" height="600">
     <VBox alignment="TOP_CENTER" prefHeight="800" prefWidth="600" spacing="100">
         <ImageView fx:id="logo" pickOnBounds="true" preserveRatio="true">

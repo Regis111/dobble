@@ -1,4 +1,4 @@
-package pl.dobblepolskab.gui;
+package pl.dobblepolskab.gui.others;
 
 public enum GameType {
     SINGLEPLAYER,

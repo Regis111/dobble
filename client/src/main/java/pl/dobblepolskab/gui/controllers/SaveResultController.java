@@ -1,4 +1,4 @@
-package pl.dobblepolskab.gui;
+package pl.dobblepolskab.gui.controllers;
 
 import gamecontent.DifficultyLevel;
 import javafx.beans.binding.Bindings;

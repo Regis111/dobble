@@ -55,8 +55,11 @@ public class ServerSDK {
         }
     }
 
-    public void initSessionAsAdmin(String clientID, DifficultyLevel computerDifficulty, int computerPlayersNumber) {
-        InitRequest initRequest = new InitRequest(clientID, computerDifficulty, computerPlayersNumber);
+    public void initSessionAsAdmin(String clientID,
+                                   DifficultyLevel computerDifficulty,
+                                   int computerPlayersNumber,
+                                   int timeInMinutes) {
+        InitRequest initRequest = new InitRequest(clientID, computerDifficulty, computerPlayersNumber, timeInMinutes);
         this.logger.info("Sending initSessionRequest {}", initRequest);
         try {
             String payload = new ObjectMapper().writeValueAsString(initRequest);

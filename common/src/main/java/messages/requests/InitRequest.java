@@ -7,13 +7,16 @@ public class InitRequest extends Request {
 
     private int computerPlayersNumber;
 
+    private int gameTimeInMinutes;
+
     public InitRequest() {
     }
 
-    public InitRequest(String clientID, DifficultyLevel computerDifficulty, int computerPlayersNumber) {
+    public InitRequest(String clientID, DifficultyLevel computerDifficulty, int computerPlayersNumber, int gameTimeInMinutes) {
         super(clientID);
         this.computerDifficulty = computerDifficulty;
         this.computerPlayersNumber = computerPlayersNumber;
+        this.gameTimeInMinutes = gameTimeInMinutes;
     }
 
     public DifficultyLevel getComputerDifficulty() {
@@ -22,5 +25,9 @@ public class InitRequest extends Request {
 
     public int getComputerPlayersNumber() {
         return computerPlayersNumber;
+    }
+
+    public int getGameTimeInMinutes() {
+        return gameTimeInMinutes;
     }
 }

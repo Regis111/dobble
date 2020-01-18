@@ -74,7 +74,7 @@ class InitStompFrameHandler implements StompFrameHandler {
     public void handleFrame(StompHeaders headers, Object payload) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            logger.info("Received: {}", (String)payload);
+            logger.info("Received: {}", payload);
             InitResponse response = mapper.readValue((String)payload, InitResponse.class);
             notifyService.notifyAboutInit(response);
         } catch (Exception e) {
@@ -101,7 +101,7 @@ class NextTurnStompFrameHandler implements StompFrameHandler {
     public void handleFrame(StompHeaders headers, Object payload) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-            logger.info("Received: {}", (String)payload);
+            logger.info("Received: {}", payload);
             AmIWinnerResponse amIWinnerResponse = mapper.readValue((String)payload, AmIWinnerResponse.class);
             notifyService.notifyAboutNextTurn(amIWinnerResponse);
         } catch (Exception e) {

@@ -99,12 +99,18 @@ public class Handler {
         humanPlayers.values().forEach(humanPlayer -> {
             Pair pair = this.gameService.getNextTurnState(humanPlayer.getClientId());
             InitResponse loss = new InitResponse(
-                    humanPlayer.getClientId(), 1, pair.getFirst(), pair.getSecond());
+                    humanPlayer.getClientId(),
+                    1,
+                    pair.getFirst(),
+                    pair.getSecond(),
+                    request.getGameTimeInMinutes()
+            );
             this.communicationService.sendOnTopic("/topic/initReply-" + humanPlayer.getClientId(), loss);
-            logger.info("Sending init response to clientID = {} with cards: [ {} , {} ]",
+            logger.info("Sending init response to clientID = {} with cards: [ {} , {} ]; gameTime = {}",
                     humanPlayer.getClientId(),
                     pair.getFirst(),
-                    pair.getSecond()
+                    pair.getSecond(),
+                    request.getGameTimeInMinutes()
             );
         });
     }

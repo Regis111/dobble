@@ -11,13 +11,16 @@ public class InitializationFinishedEvent extends Event {
     private ServerSDK connection;
     private int[] cards;
     private boolean isAdmin;
+    private int gameTimeInMinutes;
 
-    public InitializationFinishedEvent(EventType<? extends Event> eventType, ServerSDK connection, int[] cards, boolean isAdmin) {
+    public InitializationFinishedEvent(EventType<? extends Event> eventType, ServerSDK connection, int[] cards,
+                                       boolean isAdmin, int gameTimeInMinutes) {
         super(eventType);
 
         this.connection = connection;
         this.cards = cards;
         this.isAdmin = isAdmin;
+        this.gameTimeInMinutes = gameTimeInMinutes;
     }
 
     public ServerSDK getConnection() {
@@ -30,5 +33,9 @@ public class InitializationFinishedEvent extends Event {
 
     public boolean isAdmin() {
         return isAdmin;
+    }
+
+    public int getGameTimeInMinutes() {
+        return gameTimeInMinutes;
     }
 }

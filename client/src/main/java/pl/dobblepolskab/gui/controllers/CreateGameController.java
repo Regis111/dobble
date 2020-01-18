@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.VBox;
 import pl.dobblepolskab.gui.events.GameStartedEvent;
 import pl.dobblepolskab.gui.events.SceneChangedEvent;
@@ -29,9 +30,9 @@ public class CreateGameController {
     @FXML
     private ComboBox<Integer> playersCount;
     @FXML
-    private ComboBox levelInput;
+    private ComboBox<String> levelInput;
     @FXML
-    private Spinner timeInput;
+    private Spinner<Integer> timeInput;
     @FXML
     private Button goBack;
     @FXML
@@ -42,6 +43,8 @@ public class CreateGameController {
 
     @FXML
     public void initialize() {
+        timeInput.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(GameConstants.MIN_GAME_TIME_IN_MINUTES, GameConstants.MAX_GAME_TIME_IN_MINUTES));
+
         ReadOnlyDoubleProperty width = scene.widthProperty();
         ReadOnlyDoubleProperty height = scene.heightProperty();
 
@@ -64,7 +67,7 @@ public class CreateGameController {
 
     @FXML
     public void difficultyLevelSelected() {
-        level = DifficultyLevel.valueOf((String) levelInput.getValue());
+        level = DifficultyLevel.valueOf(levelInput.getValue());
     }
 
     @FXML
@@ -74,6 +77,6 @@ public class CreateGameController {
 
     @FXML
     public void startTheGame() {
-        scene.getRoot().fireEvent(new GameStartedEvent(GameStartedEvent.MULTIPLAYER_STARTED_EVENT_TYPE, level, count, (int) timeInput.getValue()));
+        scene.getRoot().fireEvent(new GameStartedEvent(GameStartedEvent.MULTIPLAYER_STARTED_EVENT_TYPE, level, count, timeInput.getValue()));
     }
 }

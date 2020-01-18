@@ -35,13 +35,15 @@ public class LoadingMenuController {
     private boolean isAdmin;
     private DifficultyLevel level;
     private int botsCount;
+    private int gameTimeInMinutes;
 
     private ServerSDK connection;
     private boolean isInitialized;
 
-    public LoadingMenuController(DifficultyLevel level, int botsCount) {
+    public LoadingMenuController(DifficultyLevel level, int botsCount, int gameTimeInMinutes) {
         this.level = level;
         this.botsCount = botsCount;
+        this.gameTimeInMinutes = gameTimeInMinutes;
         this.isInitialized = false;
 
         this.isAdmin = !(botsCount == -1);
@@ -74,14 +76,15 @@ public class LoadingMenuController {
 
             isInitialized = true;
             InitializationFinishedEvent e =
-                    new InitializationFinishedEvent(InitializationFinishedEvent.INITIALIZATION_FINISHED_EVENT_TYPE, connection, cards, isAdmin);
+                    new InitializationFinishedEvent(InitializationFinishedEvent.INITIALIZATION_FINISHED_EVENT_TYPE,
+                            connection, cards, isAdmin, response.getGameTimeInMinutes());
             scene.getRoot().fireEvent(e);
         });
 
         connection = new ServerSDK(scene.getRoot());
         String clientId = connection.getStompSessionHandler().getClientID();
         if (isAdmin)
-            connection.initSessionAsAdmin(clientId, level, botsCount);
+            connection.initSessionAsAdmin(clientId, level, botsCount, gameTimeInMinutes);
     }
 
     @FXML

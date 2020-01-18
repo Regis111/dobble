@@ -27,11 +27,7 @@
             </HBox>
             <HBox alignment="CENTER" spacing="10">
                 <Label text="Duration of the game [min]:"/>
-                <Spinner fx:id="timeInput">
-                    <valueFactory>
-                        <SpinnerValueFactory.IntegerSpinnerValueFactory min="5" max="20"/>
-                    </valueFactory>
-                </Spinner>
+                <Spinner fx:id="timeInput"/>
             </HBox>
         </VBox>
         <HBox alignment="CENTER" spacing="10">

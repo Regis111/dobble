@@ -21,7 +21,6 @@ public class Main extends Application {
 
     // Multiplayer game settings.
     private ServerSDK connection;
-    private int gameDuration;
     private boolean isAdmin;
 
     public static void main(String[] args) {
@@ -101,8 +100,7 @@ public class Main extends Application {
             e.consume();
 
             loader = new FXMLLoader(getClass().getResource("LoadingMenu.fxml"));
-            LoadingMenuController controller = new LoadingMenuController(e.getDifficultyLevel(), e.getBotsCount());
-            this.gameDuration = e.getDuration();
+            LoadingMenuController controller = new LoadingMenuController(e.getDifficultyLevel(), e.getBotsCount(), e.getDuration());
             loader.setController(controller);
 
             loadAndLayoutNewScene();
@@ -112,7 +110,7 @@ public class Main extends Application {
             e.consume();
 
             loader = new FXMLLoader(getClass().getResource("GameTable.fxml"));
-            GameTableController controller = new GameTableController(e.getConnection(), e.getCards(), gameDuration);
+            GameTableController controller = new GameTableController(e.getConnection(), e.getCards(), e.getGameTimeInMinutes());
             this.connection = e.getConnection();
             this.isAdmin = e.isAdmin();
             loader.setController(controller);

@@ -60,14 +60,14 @@ public class GameTableController {
         this.duration = level.getGameTimeInSeconds();
     }
 
-    public GameTableController(ServerSDK connection, int[] cards, int gameDuration) {
+    public GameTableController(ServerSDK connection, int[] cards, int gameTimeInMinutes) {
         this.type = GameType.MULTIPLAYER;
         this.connection = connection;
         this.clientId = connection.getStompSessionHandler().getClientID();
         this.initialCards = cards;
         this.score = new SimpleIntegerProperty(0);
         this.turnId = 1;
-        this.duration = gameDuration * 60; // Conversion to seconds
+        this.duration = gameTimeInMinutes * 60; // Conversion to seconds
     }
 
     @FXML

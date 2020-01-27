@@ -1,13 +1,16 @@
 package pl.dobblepolskab.model.servergamesession.gamecardsstack;
 
-import pl.dobblepolskab.common.gamecontent.GameCard;
-import pl.dobblepolskab.common.gamecontent.GameContent;
+import gamecontent.GameCard;
+import gamecontent.GameContent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 public class PlayerStack extends GameCardsStack {
     private boolean initiated;
 
-    public PlayerStack(GameContent gameContent) {
-        super(gameContent);
+    public PlayerStack() {
+        super(GameContent.getInstance());
         initObject();
     }
 

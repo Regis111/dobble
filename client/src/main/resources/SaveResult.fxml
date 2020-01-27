@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+
+<Scene fx:id="scene" xmlns:fx="http://javafx.com/fxml" width="800.0" height="600.0">
+    <VBox spacing="10" alignment="CENTER" prefWidth="800" prefHeight="600">
+        <Text fx:id="scoreDisplay" fill="black" style="-fx-font: 40 arial"/>
+        <HBox spacing="10" alignment="CENTER">
+            <Label text="User Name:"/>
+            <TextField fx:id="nameField"/>
+        </HBox>
+        <HBox spacing="10" alignment="CENTER">
+            <Button fx:id="goBack" text="Main Menu" onMouseClicked="#goBackToMenu"/>
+            <Button fx:id="saveButton" text="Save" onMouseClicked="#saveResult"/>
+        </HBox>
+    </VBox>
+</Scene>

@@ -1,7 +1,10 @@
 package pl.dobblepolskab.model.servergamesession.playersmanager.player;
 
-import pl.dobblepolskab.common.gamecontent.GameCard;
-import pl.dobblepolskab.common.gamecontent.GameContent;
+import gamecontent.GameCard;
+import gamecontent.GameContent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import pl.dobblepolskab.model.servergamesession.gamecardsstack.PlayerStack;
 
 public abstract class Player {
@@ -9,10 +12,10 @@ public abstract class Player {
     private String clientId;
     private PlayerStack cardsStack;
 
-    public Player(GameContent gameContent, String name, String clientId){
+    public Player(String name, String clientId){
         this.name = name;
         this.clientId = clientId;
-        cardsStack = new PlayerStack(gameContent);
+        cardsStack = new PlayerStack();
     }
 
     public void preparePlayerToGame(GameCard firstCard){

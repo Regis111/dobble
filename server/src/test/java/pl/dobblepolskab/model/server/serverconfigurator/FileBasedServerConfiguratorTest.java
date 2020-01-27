@@ -4,8 +4,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
-import pl.dobblepolskab.common.gamecontent.GameCardSymbol;
-import pl.dobblepolskab.common.gamecontent.GameContentBox;
+import gamecontent.GameCardSymbol;
+import gamecontent.GameContentBox;
 
 public class FileBasedServerConfiguratorTest {
     private static String errorString = "Reading configuration from config file doesn't work!";

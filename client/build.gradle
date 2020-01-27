@@ -5,15 +5,12 @@ plugins {
     id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
-
 repositories {
     mavenCentral()
 }
 
 dependencies {
+    implementation project(':common')
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     testCompile 'org.springframework.boot:spring-boot-starter-test'
@@ -21,6 +18,11 @@ dependencies {
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
+}
+
+javafx {
+    modules = ['javafx.controls', 'javafx.fxml' ]
+    version = '11.0.2'
 }
 
 mainClassName = 'Main'

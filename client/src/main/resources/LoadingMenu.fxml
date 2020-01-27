@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.Scene?>
+<?import javafx.scene.text.Text?>
+<?import pl.dobblepolskab.gui.others.Timer?>
+<?import javafx.scene.layout.VBox?>
+
+<Scene fx:id="scene" xmlns:fx="http://javafx.com/fxml" width="800.0" height="600.0">
+    <VBox fx:id="vBox" alignment="CENTER" prefWidth="800" prefHeight="600">
+        <VBox alignment="CENTER" spacing="10">
+            <Timer fx:id="timeDisplay" format="mm:ss" fill="black"/>
+            <Text fx:id="messageDisplay" text="Waiting for the game to start..."/>
+        </VBox>
+    </VBox>
+</Scene>

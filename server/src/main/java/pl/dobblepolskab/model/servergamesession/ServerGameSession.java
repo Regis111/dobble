@@ -1,76 +1,94 @@
 package pl.dobblepolskab.model.servergamesession;
 
-import pl.dobblepolskab.common.gamecontent.GameCard;
-import pl.dobblepolskab.common.gamecontent.GameContent;
-import pl.dobblepolskab.common.sockets.ServerSocket;
+import gamecontent.DifficultyLevel;
+import gamecontent.GameCard;
+import gamecontent.GameContent;
+import messages.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 import pl.dobblepolskab.model.servergamesession.gamecardsstack.GameMainStack;
 import pl.dobblepolskab.model.servergamesession.playersmanager.PlayersManager;
+import pl.dobblepolskab.model.servergamesession.playersmanager.player.Player;
+import pl.dobblepolskab.services.AdminPlayerService;
+import pl.dobblepolskab.services.GameService;
+import pl.dobblepolskab.services.SessionConfigurationService;
 
 import java.util.Collections;
 import java.util.LinkedList;
 
-public class ServerGameSession {
+@Component
+@Scope(value = "singleton")
+public class ServerGameSession implements GameService, SessionConfigurationService {
     private GameContent gameContent;
     private GameMainStack mainStack;
     private PlayersManager playersManager;
-    private ServerSocket serverSocket;
     private boolean sessionRunning;
     private int shoutId;
-    private boolean isCardTaken;
+    private int computerPlayersNum;
 
-    public ServerGameSession(GameContent gameContent, ServerSocket serverSocket){
-        this.gameContent = gameContent;
-        this.serverSocket = serverSocket;
-        mainStack = new GameMainStack(gameContent);
-        playersManager = new PlayersManager(gameContent);
+    @Autowired
+    public ServerGameSession(GameMainStack gameMainStack,
+                             PlayersManager playersManager){
+        this.gameContent = GameContent.getInstance();
+        mainStack = gameMainStack;
+        this.playersManager = playersManager;
         sessionRunning = false;
         shoutId = 0;
-        isCardTaken = false;
+        computerPlayersNum = 0;
     }
 
-    public boolean startGameSession(){
+    @Override
+    public void startGameSession(){
         if(sessionRunning)
-            return false;
+            return;
+        for(int i = 0; i < computerPlayersNum; i++)
+            playersManager.addComputerPlayer();
         LinkedList<GameCard> cardsToGiveOut = new LinkedList<>(gameContent.getCards());
         Collections.shuffle(cardsToGiveOut);
         playersManager.preparePlayersToGame(cardsToGiveOut);
         mainStack.initMainStack(cardsToGiveOut);
         shoutId = 1;
         sessionRunning = true;
-        return true;
     }
 
-    public boolean endGameSession(){
-        if(!sessionRunning || mainStack.getCardsCount() > 0)
-            return false;
+    public void endGameSession(){
+        if(!sessionRunning)
+            return;
+        playersManager.reset();
         sessionRunning = false;
-        return true;
+        shoutId = 0;
+        computerPlayersNum = 0;
     }
 
-    public int[] getNextTopCardsForPlayer(String playerClientId){
-        return new int[] {gameContent.getCardIdInModel(mainStack.getTopCard()),
-                gameContent.getCardIdInModel(playersManager.getTopCardOfPlayer(playerClientId))};
-    }
-
-    public boolean startNextShout(){
-        if(!isCardTaken)
-            return false;
-        shoutId++;
-        isCardTaken = false;
-        return true;
+    @Override
+    public Pair getNextTurnState(String playerClientId){
+        return new Pair(gameContent.getCardIdInModel(mainStack.getTopCard()),
+                gameContent.getCardIdInModel(playersManager.getTopCardOfPlayer(playerClientId)));
     }
 
     public int getShoutId() {
         return shoutId;
     }
 
+    @Override
     public boolean isWinner(String playerClientId, int requestShoutId){
-        if(requestShoutId != shoutId || isCardTaken)
+        if(requestShoutId != shoutId)
             return false;
         playersManager.pushGameCardOnPlayerStack(playerClientId, mainStack.popCard());
-        isCardTaken = true;
+        shoutId++;
         return true;
     }
 
+    @Override
+    public void setComputerPlayersNumber(int playersNumber) {
+        if(playersNumber < 0 || playersNumber > 7)
+            return;
+        computerPlayersNum = playersNumber;
+    }
 
+    @Override
+    public void setComputerDifficulty(DifficultyLevel computerDifficulty) {
+        playersManager.setComputerIntelligenceLevel(computerDifficulty);
+    }
 }

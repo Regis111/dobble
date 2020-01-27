@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import pl.dobblepolskab.gui.view.DobbleCard?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.VBox?>
+<?import pl.dobblepolskab.gui.others.Timer?>
+
+<Scene fx:id="scene" xmlns:fx="http://javafx.com/fxml/1" width="800" height="600">
+    <Pane fx:id="pane" style="-fx-background-color: lightgreen">
+        <DobbleCard fx:id="leftCard"/>
+        <DobbleCard fx:id="rightCard"/>
+        <VBox alignment="BOTTOM_LEFT" prefHeight="${scene.height}">
+            <Text fx:id="scoreDisplay" fill="black"/>
+        </VBox>
+        <VBox alignment="TOP_RIGHT" prefWidth="${scene.width}">
+            <Timer fx:id="timeDisplay" format="mm:ss" fill="black"/>
+        </VBox>
+    </Pane>
+</Scene>

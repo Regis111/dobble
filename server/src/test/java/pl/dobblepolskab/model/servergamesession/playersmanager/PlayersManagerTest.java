@@ -2,6 +2,7 @@ package pl.dobblepolskab.model.servergamesession.playersmanager;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import gamecontent.GameContent;
 
@@ -9,6 +10,7 @@ public class PlayersManagerTest {
     private GameContent gameContent = GameContent.getInstance();
 
     @Test
+    @Ignore
     public void addHumanPlayerTest() {
         // given
         String errorString = "Chacking if the player is currently added to list doesn't work!";
